@@ -1,4 +1,10 @@
+import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+import '../../EntityLayer/Concrete/DaireSakini.dart';
 
 class AnaEkran extends StatefulWidget {
   const AnaEkran({Key? key}) : super(key: key);
@@ -82,18 +88,38 @@ class _UstKisimState extends State<UstKisim> {
                       size: 40,
                     ),
                     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                          PopupMenuItem(
-                            child: PopupMenuButton(
-                              itemBuilder: (BuildContext context) => [
-                                const PopupMenuItem(child: Text("Deneme")),
-                              ],
+                      const PopupMenuItem(child: ListTile(
+                            leading: Icon(Icons.people_alt_outlined),
+                            title: Text(
+                              "Daire İşlemleri",
+                              style: TextStyle(
+                                  fontFamily: "OpenDyslexic", fontSize: 20
+                              ),
+                            ),
+                          ),),
+                      const PopupMenuDivider(),
+                      const PopupMenuItem(child: ListTile(
+                            leading: Icon(Icons.home_work_outlined),
+                            title: Text(
+                              "Tahakkuk",
+                              style: TextStyle(
+                                  fontFamily: "OpenDyslexic", fontSize: 20
+                              ),
+                            ),
+                          ),),
+                      const PopupMenuDivider(),
+                      const PopupMenuItem(child: ListTile(
+                            leading: Icon(Icons.info_outline),
+                            title: Text(
+                              "Hakkında",
+                              style: TextStyle(
+                                  fontFamily: "OpenDyslexic", fontSize: 20
+                              ),
                             ),
                           ),
-                          const PopupMenuItem(child: Text("Deneme")),
-                          const PopupMenuItem(child: Text("Deneme2")),
-                          const PopupMenuItem(child: Text("Deneme3")),
-                          const PopupMenuItem(child: Text("Deneme"))
-                        ]),
+                      ),
+                    ]
+                ),
               ),
             ],
           ),
@@ -110,7 +136,39 @@ class Govde extends StatefulWidget {
   State<Govde> createState() => _GovdeState();
 }
 
+List<DaireSakini>? _daireSakinleri;
+Aidat? _aidat;
+
 class _GovdeState extends State<Govde> {
+  initState() {
+    _daireSakinleri = <DaireSakini>[
+      DaireSakini.set(
+          ad: "Bekir", soyad: "Piralp", tc: "12345678910", daire: 10),
+      DaireSakini.set(
+          ad: "Deneme ad 2",
+          soyad: "Deneme soyad 3",
+          tc: "12345678911",
+          daire: 20),
+      DaireSakini.set(
+          ad: "Deneme ad 3",
+          soyad: "Deneme soyad 4",
+          tc: "12345678912",
+          daire: 30),
+      DaireSakini.set(
+          ad: "Deneme ad 4",
+          soyad: "Deneme soyad 5",
+          tc: "12345678913",
+          daire: 40),
+      DaireSakini.set(
+          ad: "Deneme ad 5",
+          soyad: "Deneme soyad 6",
+          tc: "12345678914",
+          daire: 50)
+    ];
+    _aidat = Aidat.set(tutar: Decimal.fromJson("129.9900000000000001"));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size _size = MediaQuery.of(context).size;
@@ -120,6 +178,7 @@ class _GovdeState extends State<Govde> {
           SizedBox(
             height: 30,
           ),
+          /** Aidat Kısmı **/
           SizedBox(
             height: 40,
             child: Container(
@@ -143,45 +202,184 @@ class _GovdeState extends State<Govde> {
                       ),
                     ),
                   ),
+                  /** Aidat **/
                   Expanded(
                       child: Container(
-                        child: Center(
-                            child: Text(
-                              "112.25 TL",
-                              style: TextStyle(color: Colors.white, fontSize: 30),
-                            )
+                    child: Center(
+                        child: Row(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Text(
+                                  _aidat!.TutarGet().toString(),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 30),
+                                ),
+                              ]),
                         ),
-                      )
-                  ),
+                        Text(
+                          " TL",
+                          style: TextStyle(color: Colors.white, fontSize: 30),
+                        ),
+                      ],
+                    )),
+                  )),
                 ],
               ),
             ),
           ),
+          /** Borçlu daire sakinleri kısmı **/
           Expanded(
-            child: Stack(
-              children: [
-                Positioned(left:_size.width*0.33,top: _size.height*0.035,child: Text("Borçlu Daire Sakinleri",style: TextStyle(fontSize: 22,color: Colors.white,fontFamily: "OpenDyslexic"),)),
-                Container(
-                  margin: const EdgeInsets.only(left: 40, top: 20),
-                  padding: const EdgeInsets.only(left: 40, top: 40),
-                  decoration: BoxDecoration(
+            child: Stack(children: [
+              /** Başlık kısmı **/
+              Positioned(
+                  left: _size.width * 0.33,
+                  top: _size.height * 0.035,
+                  child: Text(
+                    "Borçlu Daire Sakinleri",
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontFamily: "OpenDyslexic"),
+                  )),
+              /** Daire sakini listesi **/
+              Container(
+                margin: const EdgeInsets.only(left: 40, top: 20),
+                padding: const EdgeInsets.only(left: 40, top: 40),
+                decoration: BoxDecoration(
                     //color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(_size.width * 0.35)),
-                      border: Border.all(color: Colors.greenAccent, width: 2)),
-                  child: Center(
-                    child: Column(
-                      children: [
-
-                        Expanded(child: Container(color: Colors.red,))
-                      ],
-                    ),
-                  ),
-                ),
-              ]
-            ),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(_size.width * 0.35)),
+                    border: Border.all(color: Colors.greenAccent, width: 2)),
+                child: ListView.builder(
+                    itemCount: _daireSakinleri?.length,
+                    itemBuilder: BorcListBuilder),
+              ),
+            ]),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget BorcListBuilder(BuildContext context, int say) {
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, top: 8, right: 10),
+      child: Container(
+        padding: EdgeInsets.only(left: 20),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(50),
+              bottomLeft: Radius.circular(50),
+            )),
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                child: Column(
+                  children: [
+                    /** Ad **/
+                    Row(
+                      children: [
+                        const Text(
+                          "Adı :\t\t\t\t\t\t\t",
+                          style: TextStyle(fontSize: 17.5),
+                        ),
+                        Flexible(
+                          child: Text(
+                            "${_daireSakinleri?[say].AdGet()}",
+                            style: const TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                    ),
+                    /** Soyad **/
+                    Row(
+                      children: [
+                        const Text(
+                          "Soyadı : ",
+                          style: TextStyle(fontSize: 17.5),
+                        ),
+                        Flexible(
+                          child: Text(
+                            "${_daireSakinleri?[say].SoyadGet()}",
+                            style: const TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                    ),
+                    /** Daire no **/
+                    Row(
+                      children: [
+                        const Text(
+                          "Daire : \t\t\t",
+                          style: TextStyle(fontSize: 17.5),
+                        ),
+                        Flexible(
+                          child: Text(
+                            "${_daireSakinleri?[say].DaireGet()}",
+                            style: const TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            /** Defter efecti **/
+            SizedBox(
+              width: 30,
+              height: 200,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(child: Container()),
+                  DefterEffectSag(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Expanded(child: Container()),
+                  DefterEffectSag(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Expanded(child: Container()),
+                  DefterEffectSag(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Expanded(child: Container()),
+                  DefterEffectSag(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Expanded(child: Container()),
+                  DefterEffectSag(
+                    width: 20,
+                    height: 20,
+                  ),
+                  Expanded(child: Container()),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

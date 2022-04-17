@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Entity.dart';
 import 'package:decimal/decimal.dart';
 
@@ -11,6 +13,12 @@ class Aidat extends Entity{
   int _Ay = 0;
   int _Yil =0;
 
+  Aidat.set({int apartman=0,Decimal? tutar ,int ay =0,int yil = 0}){
+    this._Apartman = apartman;
+    this._Tutar = tutar ?? Decimal.zero;
+    this._Ay = ay;
+    this._Yil = yil;
+  }
   /*** get ve set metodaları***/
     int ApartmanGet()=> _Apartman;
     Decimal TutarGet() => _Tutar;

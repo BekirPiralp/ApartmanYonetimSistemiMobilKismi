@@ -10,6 +10,14 @@ class DaireSakini extends Entity{
   String _Ad="" ;
   String _Soyad="";
 
+  DaireSakini.set({int apartman = 0,int daire = 0,String ad = "",String soyad = "", String tc = ""}){
+    this._Apartman = apartman;
+    this._Daire = daire;
+    this._Ad = ad;
+    this._Soyad = soyad;
+    this._TC = tc;
+  }
+
   /*** Get ve set ***/
   int ApartmanGet()=> _Apartman;
   int DaireGet()=> _Daire;

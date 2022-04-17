@@ -98,8 +98,10 @@ class UstKisim extends StatelessWidget {
                               style: TextStyle(
                                   fontFamily: "OpenDyslexic", fontSize: 20),
                             ),
-                          ))
-                    ]),
+                          ),
+                      )
+                    ]
+                ),
               ],
             ),
           ),
