@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'Ekranlar/DaireSakini/AnaEkran.dart' as dsAna;
 import 'Ekranlar/Giris.dart';
+import 'Ekranlar/Yonetici/AnaEkran.dart' as yntciAna;
 
 void main() {
   //runApp(const MyApp()); //Şuan içn değiştireceğim
-  runApp(MaterialApp(debugShowCheckedModeBanner: false,home:dsAna.AnaEkran()));//home:Giris(),));//Giris());
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,home:yntciAna.AnaEkran()));//dsAna.AnaEkran()));//home:Giris(),));//Giris());
 }
 
 class MyApp extends StatelessWidget {
