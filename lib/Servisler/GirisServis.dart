@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/DaireSakini.dart';
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Yonetici.dart';
@@ -19,9 +20,12 @@ class Giris {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
-      } else {
-        result = null;
+      } else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Yonetici getirilirken hata oluştu");
     }
@@ -41,7 +45,12 @@ class Giris {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Daire Sakini getirilirken hata oluştu");
     }

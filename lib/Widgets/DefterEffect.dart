@@ -55,3 +55,20 @@ class _DefterEffectSolState extends State<DefterEffectSol> {
     );
   }
 }
+
+class Cizgi extends StatefulWidget {
+  const Cizgi({Key? key}) : super(key: key);
+
+  @override
+  State<Cizgi> createState() => _CizgiState();
+}
+
+class _CizgiState extends State<Cizgi> {
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      color: Colors.black,
+      thickness: 2,
+    );
+  }
+}

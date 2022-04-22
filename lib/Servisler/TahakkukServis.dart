@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';
@@ -24,7 +25,12 @@ class TahakkukServisi {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("veri getirilirken hata oluştu");
     }
@@ -44,7 +50,12 @@ class TahakkukServisi {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Aidat Tanımlanırken bir hata oluştu");
     }
@@ -63,7 +74,12 @@ class TahakkukServisi {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Tahakkuk olusturulurken hata olustu");
     }

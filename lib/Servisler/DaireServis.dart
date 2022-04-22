@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';
 
@@ -24,7 +26,11 @@ class DaireServisi {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    } on SocketException {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Daire tanımlanırken hata oluştu");
     }
@@ -35,12 +41,12 @@ class DaireServisi {
       int apartman, DaireSakini daireSakini, int daireSno) async {
     bool result = false;
     try {
-      Map<String, dynamic> queryparams = {
+      Map<String, dynamic> queryparams = daireSakini.cevirNesnedenJsonMap();
+
+      queryparams.addAll({
         "apartman": apartman,
         "daireSNO": daireSno
-      };
-      queryparams.addAll(daireSakini
-          .cevirNesnedenJsonMap()); //body den alına bilir duruma göre değişe bilir
+      }); //body den alına bilir duruma göre değişe bilir
 
       http.Response response = await http.post(
           WebServisConnection.UrlDaireTanimlaSno(queryparams),
@@ -51,10 +57,46 @@ class DaireServisi {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    } on SocketException {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Daire tanımlanırken hata oluştu");
+      throw Exception(
+          "Daire tanımlanırken hata oluştu.\n Detay ${hata.toString()}");
     }
+    return result;
+  }
+
+  Future<List<DaireSakini>?> DaireSakinleriGetir(int apartman) async {
+    List<DaireSakini>? result;
+
+    Map<String, dynamic> queryparams = {"apartman": apartman};
+
+    try {
+      http.Response response = await http.get(
+          WebServisConnection.UrlDaireSakinleriGetir(queryparams),
+          headers: WebServisConnection.baslik);
+      if (response.statusCode == ResponseKod.basarili) {
+        List json = jsonDecode(response.body);
+
+        if (json.isNotEmpty) {
+          result =
+              json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast();
+        }
+      }else if (response.statusCode == ResponseKod.serverError) {
+        throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
+            jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
+      }
+    } on SocketException {
+      throw SocketException("Bağlantı hatası oluştu.");
+    } catch (hata) {
+      throw Exception("Daire sakinleri getirilirken hata oluştu.");
+    }
+
     return result;
   }
 }

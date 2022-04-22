@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';
 import 'package:decimal/decimal.dart';
@@ -20,7 +21,12 @@ class GiderlerServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw Exception("Gider oluştururken hata oluştu");
     }
@@ -41,7 +47,12 @@ class GiderlerServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw new Exception("Gider oluştururken hata oluştu");
     }
@@ -63,7 +74,12 @@ class GiderlerServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
-      } //result null olacağı için tekrar atamaya gerek yok
+      } else{
+        throw SocketException("");
+      }//result null olacağı için tekrar atamaya gerek yok
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw new Exception("Giderler gietirilirken hata oluştu");
     }
@@ -86,7 +102,12 @@ class GiderlerServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       } //result null olacağı için tekrar atamaya gerek yok
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
       throw new Exception("Giderler gietirilirken hata oluştu");
     }

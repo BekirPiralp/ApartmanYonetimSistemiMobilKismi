@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 class WebServisConnection {
   static const String _scheme = "http://";
-  static int _port = 0;
-  static String _host = "lochalhost";
+  static int _port = 80;
+  static String _host = "192.168.1.1";
 
   static String get Url {
-    return _port > 0 && _port < 65535
+    return _port >= 1 && _port < 65535
         ? _scheme + _host + "/"
         : _scheme + _host + ":" + _port.toString() + "/";
   }
@@ -24,10 +26,10 @@ class WebServisConnection {
   }
 
   static const Map<String, String> baslik = {
-    "Contetnt-Type": "application/JSON"
+    "Contetnt-Type": "application/json",
   };
 
-  static get Tahakkuk => {Url + "tahakkuk/"};
+  static String get Tahakkuk => Url + "tahakkuk/";
 
   //static get UrlTahakkukAidatTanimla => {Uri.parse(Tahakkuk + "aidat/tanimla")};
   static Uri UrlTahakkukAidatTanimla(Map<String, dynamic>? queryparams) {
@@ -44,7 +46,7 @@ class WebServisConnection {
     return _uri(queryparams, Uri.parse(Tahakkuk + "gerceklestir"));
   }
 
-  static get Giris => {Url + "giris/"};
+  static String get Giris => Url + "giris/";
 
   static Uri UrlGirisYonetici(Map<String, dynamic>? queryparams) =>
       _uri(queryparams, Uri.parse(Giris + "getir/yonetici"));
@@ -52,7 +54,7 @@ class WebServisConnection {
   static Uri UrlGirisDaireSakini(Map<String, dynamic>? queryparams) =>
       _uri(queryparams, Uri.parse(Giris + "getir/daire_sakini"));
 
-  static get Gider => {Url + "gider/"};
+  static String get Gider => Url + "gider/";
 
   static Uri UrlGiderOlustur(Map<String, dynamic>? queryparams) =>
       _uri(queryparams,Uri.parse(Gider + "olustur"));
@@ -66,15 +68,18 @@ class WebServisConnection {
   static Uri UrlGiderDonemGetir(Map<String, dynamic>? queryparams) =>
   _uri(queryparams,Uri.parse(Gider + "donem_getir"));
 
-  static get Daire => {Url + "daire/"};
+  static String get Daire => Url + "daire/";
 
   static Uri UrlDaireTanimlaNesne(Map<String, dynamic>? queryparams) =>
       _uri(queryparams,Uri.parse(Daire + "tanimla/nesne"));
 
   static Uri UrlDaireTanimlaSno(Map<String, dynamic>? queryparams) =>
-      _uri(queryparams,Uri.parse(Daire + "tanimla/sno"));
+      _uri(queryparams,Uri.parse(Daire.toString() + "tanimla/sno"));
 
-  static get Borc => {Url + "borc/"};
+  static Uri UrlDaireSakinleriGetir(Map<String,dynamic> queryparams) =>
+      _uri(queryparams,Uri.parse(Daire.toString()+"getir"));
+
+  static String get Borc => Url + "borc/";
 
   static Uri UrlBorcOdenmemis(Map<String, dynamic>? queryparams) =>
       _uri(queryparams,Uri.parse(Borc + "Odenmemis"));
@@ -92,13 +97,23 @@ class WebServisConnection {
       _uri(queryparams,Uri.parse(Borc + "ode"));
 
   static Uri _uri(Map<String, dynamic>? params, Uri url) {
+    Map<String, dynamic>? _params ;
+    if(params != null)
+      _params= Map<String,dynamic>();
+    params?.forEach((key, value) {
+      if(value == null){
+        _params!.addAll({key:'null'});
+      }else{
+        _params!.addAll({key:value.toString()});
+      }
+    });
     if (params == null) return url;
     Uri result = Uri(
-        scheme: url.scheme,
-        host: url.host,
-        port: url.port,
-        path: url.path,
-        queryParameters: params);
+        scheme: url.scheme.toString(),
+        host: url.host.toString(),
+        port: url.port.toInt(),
+        path: url.path.toString(),
+        queryParameters: _params ?? null);
 
     return result;
   }

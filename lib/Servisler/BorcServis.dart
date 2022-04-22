@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/DaireSakini.dart';
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';
@@ -26,8 +27,13 @@ class BorcServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
-    } catch (hata) {
+    } on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
+    }catch (hata) {
       throw Exception("Ödenmemiş borçlar getirilirken hata oluştu");
     }
     return result;
@@ -49,8 +55,13 @@ class BorcServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
-    } catch (hata) {
+    } on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
+    }catch (hata) {
       throw Exception("Ödenmemiş borçlar getirilirken hata oluştu");
     }
     return result;
@@ -73,8 +84,13 @@ class BorcServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
-    } catch (hata) {
+    } on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
+    }catch (hata) {
       throw Exception("Borclular getirilirken hata oluştu");
     }
     return result;
@@ -93,8 +109,13 @@ class BorcServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
-    } catch (hata) {
+    } on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
+    }catch (hata) {
       throw Exception("Toplam borç getirilirken hata oluştu");
     }
     return result;
@@ -118,8 +139,13 @@ class BorcServis {
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
             jsonDecode(response.body).toString());
+      }else{
+        throw SocketException("");
       }
-    } catch (hata) {
+    }on SocketException
+    {
+      throw SocketException("Bağlantı hatası oluştu");
+    }catch (hata) {
       throw Exception("Borç ödeme esnasında hata oluştu");
     }
     return result;

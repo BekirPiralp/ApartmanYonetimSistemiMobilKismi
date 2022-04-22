@@ -18,6 +18,11 @@ class Entity implements IEntity{
   /** Get ve Set bitiş **/
 
   Entity();
+  Entity.set({ObjectId? id,int sNo=0,bool silDurum = false}){
+    this._id = id ?? ObjectId();
+    this._SilDurum = silDurum;
+    this._SNo = sNo;
+  }
   Entity.cevirJsonMapdanNesne(Map <String,dynamic> json) { // hepsinde olacak
     _id = ObjectId.fromHexString(json["_id"].toString());
     _SNo = int.parse(json["SNo"].toString());

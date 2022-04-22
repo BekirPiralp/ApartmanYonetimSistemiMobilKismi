@@ -2,7 +2,6 @@ import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import '../../EntityLayer/Concrete/DaireSakini.dart';
 

@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:objectid/objectid.dart';
 
 import '../Concrete/Entity.dart';
 
@@ -8,6 +9,14 @@ class Gider extends Entity{
   int _Ay =0;
   int _Yil =0;
   int _Tip =0;
+
+  Gider.set({int apartman=0,Decimal? tutar,int ay =0,int yil=0,int tip = 0,ObjectId? id,int sNo=0,bool silDurum = false}):super.set(id: id,silDurum: silDurum,sNo: sNo){
+    this._Apartman = apartman;
+    this._Tutar = tutar??Decimal.zero;
+    this._Ay =ay;
+    this._Yil =yil;
+    this._Tip =tip;
+  }
 
   /*** get ve set metodaları***/
   int ApartmanGet()=> _Apartman;

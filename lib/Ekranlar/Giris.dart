@@ -116,7 +116,7 @@ class _GirisState extends State<Giris> {
                                                   labelText: "TC kimlik no:",
                                                 ),
                                                 keyboardType:
-                                                TextInputType.phone,
+                                                TextInputType.number,
                                                 inputFormatters: [
                                                   FilteringTextInputFormatter
                                                       .digitsOnly

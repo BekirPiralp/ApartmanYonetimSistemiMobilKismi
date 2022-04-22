@@ -1,6 +1,14 @@
+import 'package:objectid/objectid.dart';
+
 import '../Concrete/Entity.dart';
 
 class GiderTip extends Entity{
+
+  GiderTip.set({String ad = "Diğer",String aciklama = "Açıklama",ObjectId? id,int sNo=0,bool silDurum = false}):super.set(id: id,sNo: sNo,silDurum: silDurum){
+    this._Ad = ad;
+    this._Aciklama = aciklama;
+  }
+
   String _Ad ="";
   String _Aciklama ="";
   /*** get ve set metodaları***/
@@ -10,6 +18,7 @@ class GiderTip extends Entity{
   void AdSet(String value) => _Ad = value;
   void AciklamaSet(String value) => _Aciklama = value;
   /*** get ve set metodaları bitiş***/
+
   /*** Sınıfa özel yazılacak***/
   @override
   GiderTip.cevirJsonMapdanNesne(Map<String, dynamic> json):super.cevirJsonMapdanNesne(json) {

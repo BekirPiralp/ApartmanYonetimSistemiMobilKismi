@@ -30,11 +30,13 @@ class GenisButtonState extends State<GenisButton> {
       onTapUp: (value){
         cekince();
       },
+      onTap: this.onPress,
       child:
       SizedBox(
         width: Size.infinite.width,
-        height: 40,
+        height: 50,
         child: Container(
+          margin: EdgeInsets.only(left: 10,right: 10,bottom: 10,),
           decoration: BoxDecoration(
             color: _color,
             borderRadius: const BorderRadius.horizontal(left: Radius.circular(40),right: Radius.circular(40))
