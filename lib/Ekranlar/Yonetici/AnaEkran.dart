@@ -1,5 +1,13 @@
+import 'dart:io';
+
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
+import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/BorcServis.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/DaireServis.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/TahakkukServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
@@ -137,6 +145,7 @@ class Govde extends StatefulWidget {
 
 List<DaireSakini>? _daireSakinleri;
 Aidat? _aidat;
+int _apartman=GirenPersonel.getYonetici()?.ApartmanGet() ?? 0;
 
 class _GovdeState extends State<Govde> {
   initState() {
@@ -166,6 +175,31 @@ class _GovdeState extends State<Govde> {
     ];
     _aidat = Aidat.set(tutar: Decimal.fromJson("129.9900000000000001"));
     super.initState();
+    /** Aidat bilgisi alma yeri**/
+    showDialog(context: context,builder: (context)=> Yukleniyor());
+    TahakkukServisi().AidatGetir(_apartman).then((value)=> setState(() {
+         Navigator.of(context).pop();
+         _aidat=value;
+       })).catchError((hata)=> setState(() {
+        Navigator.of(context).pop();
+        if(hata.runtimeType == SocketException)
+          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz.",));
+        else
+          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Aidat bilgisi getirilirken hata oluştu. Detay:\n${hata.toString()}",));
+      }));
+
+    /** Borçlu daire sakinleri alma kısmı **/
+    showDialog(context: context, builder: (conetxt)=>Yukleniyor());
+    BorcServis().BorcBorclular(_apartman).then((value)=> setState(() {
+        Navigator.of(context).pop();
+        _daireSakinleri = value;
+      })).catchError((hata)=> setState(() {
+        Navigator.of(context).pop();
+        if(hata.runtimeType == SocketException)
+          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz.",));
+        else
+          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Borçlu daire sakinleri getirilirken hata oluştu. Detay:\n${hata.toString()}",));
+      }));
   }
 
   @override
@@ -212,7 +246,7 @@ class _GovdeState extends State<Govde> {
                               scrollDirection: Axis.horizontal,
                               children: [
                                 Text(
-                                  _aidat!.TutarGet().toString(),
+                                  _aidat?.TutarGet().toString()??"Bilinmiyor...",
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 30),
                                 ),
@@ -265,6 +299,88 @@ class _GovdeState extends State<Govde> {
 
   Widget BorcListBuilder(BuildContext context, int say) {
 
+    if(_daireSakinleri == null){
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8, top: 8, right: 10),
+        child: Container(
+          padding: EdgeInsets.only(left: 20),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              )),
+          child: Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  child: Column(
+                    children: [
+                      /** Bilgilendirme **/
+                      Row(
+                        children: [
+                          const Text(
+                            "Bilgi :\t\t\t\t\t\t\t",
+                            style: TextStyle(fontSize: 17.5),
+                          ),
+                          Flexible(
+                            child: Text(
+                              "Daire sakinlerinin bilgilerine erişilmedi.",
+                              style: const TextStyle(
+                                  fontFamily: "OpenDyslexic", fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        color: Colors.black,
+                        thickness: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              /** Defter efecti **/
+              SizedBox(
+                width: 30,
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 8, right: 10),
       child: Container(

@@ -8,7 +8,7 @@ import 'Ekranlar/Yonetici/AnaEkran.dart' as yntciAna;
 void main() {
   //runApp(const MyApp()); //Şuan içn değiştireceğim
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,home:DaireIslemleri(),));//TahakkukIslemleri(),));//yntciAna.AnaEkran()));//dsAna.AnaEkran()));//home:Giris(),));//Giris());
+      debugShowCheckedModeBanner: false,home:yntciAna.AnaEkran()));//TahakkukIslemleri(),));//DaireIslemleri(),));//TahakkukIslemleri(),));//yntciAna.AnaEkran()));//dsAna.AnaEkran()));//home:Giris(),));//Giris());
 }
 
 class MyApp extends StatelessWidget {

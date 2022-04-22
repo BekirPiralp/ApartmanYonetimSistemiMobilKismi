@@ -574,6 +574,7 @@ class _GovdeState extends State<Govde> {
                       style: TextStyle(fontSize: 20),
                     ),
                     onPress: () {
+                      _daireSakini = DaireSakini();
                       Cikis(context);
                     },
                   ),

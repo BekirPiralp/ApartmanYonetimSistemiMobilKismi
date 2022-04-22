@@ -10,6 +10,8 @@ class Gider extends Entity{
   int _Yil =0;
   int _Tip =0;
 
+  Gider();
+
   Gider.set({int apartman=0,Decimal? tutar,int ay =0,int yil=0,int tip = 0,ObjectId? id,int sNo=0,bool silDurum = false}):super.set(id: id,silDurum: silDurum,sNo: sNo){
     this._Apartman = apartman;
     this._Tutar = tutar??Decimal.zero;

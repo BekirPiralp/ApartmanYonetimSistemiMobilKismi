@@ -1,5 +1,12 @@
+import 'dart:io';
+
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
+import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/GiderlerServis.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/TahakkukServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -142,12 +149,14 @@ class Govde extends StatefulWidget {
 }
 
 Aidat? _aidat;
+Aidat _aidatKayit= Aidat();
+Gider _giderKayit = Gider();
 List<GiderTip>? _giderTipleri;
 List<Gider>? _giderler;
+int _apartman = GirenPersonel.getYonetici()?.ApartmanGet() ?? 0;
 class _GovdeState extends State<Govde> {
   GiderTip? _dropdownValue;
   initState() {
-    _aidat = Aidat.set(tutar: Decimal.fromJson("129.9900000000000001"));
     _giderTipleri = <GiderTip>[
       GiderTip.set(),
       GiderTip.set(sNo:1,ad: "Elektirik",aciklama: "Elektrik faturası"),
@@ -156,16 +165,59 @@ class _GovdeState extends State<Govde> {
       GiderTip.set(sNo:4,ad:"Bakım",aciklama: "Doğlagaz bakımı")
     ];
     _dropdownValue=_giderTipleri![0];
-    _giderler = <Gider>[
-      Gider.set(),
-      Gider.set(ay: 1,yil: 2020,tutar: Decimal.fromJson("125.25"),sNo: 100,tip: 1),
-      Gider.set(ay: 2,yil: 2021,tutar: Decimal.fromJson("135.25"),sNo: 101,tip: 2),
-      Gider.set(ay: 3,yil: 2022,tutar: Decimal.fromJson("145.25"),sNo: 102,tip: 3),
-      Gider.set(ay: 4,yil: 2023,tutar: Decimal.fromJson("155.25"),sNo: 103,tip: 1),
-      Gider.set(ay: 5,yil: 2024,tutar: Decimal.fromJson("165.25"),sNo: 104,tip: 4),
-      Gider.set(ay: 6,yil: 2025,tutar: Decimal.fromJson("175.95"),sNo: 105,tip: 0),
-    ];
     super.initState();
+    /** Aidat Bilgisinin alınması **/
+      /** İlk Yükleniyor efekti**/
+      yukleniyor();
+    TahakkukServisi().AidatGetir(_apartman).then((value){
+      setState(() {
+        Navigator.of(context).pop();
+        _aidat = value;
+      });
+    }).catchError((hata){
+      hataOldu("Aidat bilgisi getirilirken hata oluştu.", hata);
+    });
+
+    /** Gider Tipleri bilgisi getirme **/
+      //yukleniyor();
+    // Bu uygulama temel düzey olduğu için şimdilik boş bırakıyorum uygulama içi sabit de yapılabilir
+    // veya gider getirme için web servise yazmak gerek
+
+    /** Giderler bilgisi getirme**/
+    yukleniyor();
+    GiderlerServis().GiderGetir(_apartman).then((value){
+          setState(() {
+            Navigator.of(context).pop();
+            _giderler=value;
+          });
+      }).catchError((hata){
+        hataOldu("Giderler getirilirken hata oluştu.", hata);
+    });
+  }
+  /** Yükleniyor efekti ve hata göstergesi
+   * Not:init state içerisi için**/
+  void yukleniyor() {
+    Future.delayed(Duration.zero).then((value) {
+      setState(() {
+        showDialog(context: context, builder: (context){
+          return Yukleniyor();
+        });
+      });
+    });
+  }
+  void hataOldu(String mesaj,hata){
+    setState(() {
+      Navigator.of(context).pop();
+      if(hata.runtimeType==SocketException){
+        showDialog(context: context, builder: (context){
+          return HataOlustu(messaj:"Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",);
+        });
+      }else{
+        showDialog(context: context, builder: (context){
+          return HataOlustu(messaj:"${mesaj} Detay:\n${hata.toString()}",);
+        });
+      }
+    });
   }
 
   @override
@@ -212,7 +264,7 @@ class _GovdeState extends State<Govde> {
                                       scrollDirection: Axis.horizontal,
                                       children: [
                                         Text(
-                                          _aidat!.TutarGet().toString(),
+                                          _aidat?.TutarGet().toString()??"Bilinmiyor...",
                                           style: const TextStyle(
                                               color: Colors.white, fontSize: 30),
                                         ),
@@ -268,18 +320,20 @@ class _GovdeState extends State<Govde> {
                                     child: TextField(
                                       style: TextStyle(color:Colors.white,fontSize: 25),
                                       decoration: InputDecoration(
-                                        labelText: "_ _ , _",
+                                        labelText: "_ _ . _",
                                         labelStyle: TextStyle(color: Colors.white,fontSize: 30)
                                       ),
                                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                                       inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        FilteringTextInputFormatter.deny(RegExp(r"(\.+)"))
+                                        FilteringTextInputFormatter.allow(RegExp(r"[.0123456789]")),
                                       ],
                                       onChanged: (value){
                                         /** gerekli işlem **/
                                         setState(() {
-                                          _aidat!.TutarSet(Decimal.fromJson(value));
+                                          if(value.isNotEmpty&&Decimal.fromJson(value)>Decimal.zero)
+                                            _aidatKayit.TutarSet(Decimal.fromJson(value));
+                                          else
+                                            _aidatKayit.TutarSet(Decimal.zero);
                                         });
                                       },
                                     ),
@@ -325,13 +379,21 @@ class _GovdeState extends State<Govde> {
                               ),
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r"[,0123456789]")),
+                                FilteringTextInputFormatter.allow(RegExp(r"[.0123456789]")),
                               ],
                               style: TextStyle(fontSize: 25),
                               onChanged: (value){
-                                /** gerekli işlem **/
                                 setState(() {
-                                  // yapılacak
+                                  if(value.isNotEmpty&&Decimal.fromJson(value)> Decimal.fromInt(0))
+                                    _giderKayit.TutarSet(Decimal.fromJson(value));
+                                  else{
+                                    _giderKayit.TutarSet(Decimal.zero);
+
+                                    showDialog(context: context, builder: (context){
+                                      return HataOlustu(messaj: "Tutar sıfırdan büyük olmalı",);
+                                    });
+                                  }
+
                                 });
                               },
                             ),
@@ -358,6 +420,7 @@ class _GovdeState extends State<Govde> {
                               onChanged: (GiderTip? value) {
                                 //seçili gider ayarlaması yapılacak
                                 //şeçili idye bir nesne oluşturulacak.
+                                _giderKayit.TipSet(value?.SNoGet()??0);
                                 setState(() {
                                   _dropdownValue = value;
                                 });
@@ -373,29 +436,7 @@ class _GovdeState extends State<Govde> {
           SizedBox(
             height: 8,
           ),
-          SizedBox(height: 150,child: Container(
-            margin: EdgeInsets.only(right: 5,left: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              border: Border.all(color:Colors.lightGreen.shade300,width: 2)
-            ),
-            child: TextFormField(
-              //controller: TextEditingController(),
-              style: TextStyle(color: Colors.white,fontSize: 20,),
-              maxLines: 5,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: "Açıklama:",
-                labelStyle: TextStyle(color: Colors.green.shade200,fontSize: 20),
-              ),
-              onChanged: (value){
-                setState(() {
-                  //açıklama alama
-                });
-              },
-            ),
-          ),
-          ),
+
           /** Giderleri Görme kısmı **/
           Expanded(
             child: Stack(children: [
@@ -420,7 +461,7 @@ class _GovdeState extends State<Govde> {
                         topLeft: Radius.circular(_size.width * 0.35)),
                     border: Border.all(color: Colors.greenAccent, width: 2)),
                 child: ListView.builder(
-                    itemCount: _giderler!.length,
+                    itemCount: _giderler?.length??1,
                     itemBuilder: GiderListBuilder),
               ),
             ]),
@@ -431,6 +472,88 @@ class _GovdeState extends State<Govde> {
   }
 
   Widget GiderListBuilder(BuildContext context, int say) {
+
+    if(_giderler == null){
+      //Şuan biraz üşengeçliğim tuutu o yüzden kopyala yapıştır ;)
+      //Normalde yeni bir lochal method oluşturup sadece değişenkısmı ayarlamam lazım lakin ....
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8, top: 0, right: 10),
+        child: Container(
+          padding: EdgeInsets.only(left: 20),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              )),
+          child: Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  child: Column(
+                    children: [
+                      /** Bilgi **/
+                      Row(
+                        children: [
+                          const Text(
+                            "Bilgi :\t\t\t\t\t\t\t",
+                            style: TextStyle(fontSize: 17.5),
+                          ),
+                          Flexible(
+                            child: Text(
+                              "Giderlerin Bilgisine Ulaşılamadı",
+                              style: const TextStyle(
+                                  fontFamily: "OpenDyslexic", fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Cizgi(),
+                    ],
+                  ),
+                ),
+              ),
+              /** Defter efecti **/
+              SizedBox(
+                width: 30,
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                    DefterEffectSag(
+                      width: 20,
+                      height: 20,
+                    ),
+                    Expanded(child: Container()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     try{
       _giderler!.forEach((element) {
@@ -611,7 +734,74 @@ class _AltKisimState extends State<AltKisim> {
               ),
               color: Colors.blue,
               onPress: () {
+                if(_aidatKayit.TutarGet()>Decimal.zero || _giderKayit.TutarGet()> Decimal.zero){
+                  if(_aidatKayit.TutarGet()>Decimal.zero){
+                    setState(() {
+                      showDialog(context: context, builder: (context){
+                        return Yukleniyor();
+                      });
+                    });
+                    TahakkukServisi().AidatTanimla(_apartman, _aidatKayit.TutarGet()).then(
+                        (value){
+                          setState(() {
+                            Navigator.of(context).pop();
+                            if(value == true)
+                              {
+                                showDialog(context: context, builder: (context)=>Basarili());
+                                _aidat = _aidatKayit;
+                                _aidatKayit = Aidat();
+                              }
+                            else
+                              showDialog(context: context, builder: (context)=>Basarisiz());
+                          });
+                        }
+                    ).catchError((hata){
+                      setState(() {
+                        Navigator.of(context).pop();
+                        if(hata.runtimeType == SocketException){
+                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",));
+                        }else{
+                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Aidat tanımlamada hataoluştu. Detay:\n${hata.toString()}",));
+                        }
+                      });
+                    });
+                  }
 
+                  if(_giderKayit.TutarGet()> Decimal.zero){
+                    showDialog(context: context, builder: (context){
+                      return Yukleniyor();
+                    });
+
+                    GiderlerServis().Olustur(_apartman, _giderKayit.TutarGet(), _giderKayit.TipGet()).then((value) {
+                      setState(() {
+                        Navigator.of(context).pop();
+                        if(value)
+                          {
+                            showDialog(context: context, builder: (context)=>Basarili());
+                            _giderler ??= <Gider>[];
+                            _giderler?.add(_giderKayit);
+                          }
+                        else
+                          showDialog(context: context, builder: (context)=>Basarisiz());
+                      });
+                    }).catchError((hata){
+                      setState(() {
+                        Navigator.of(context).pop();
+                        if(hata.runtimeType == SocketException){
+                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",));
+                        }else{
+                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Gider kaydetmede hataoluştu. Detay:\n${hata.toString()}",));
+                        }
+                      });
+                    });
+                  }
+                }else{
+                  setState(() {
+                    showDialog(context: context, builder: (context){
+                      return HataOlustu(messaj:"Lütfen parametreleri eksiksiz giriniz");
+                    });
+                  });
+                }
               },
             ),
           ),

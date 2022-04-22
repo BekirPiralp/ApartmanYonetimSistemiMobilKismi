@@ -27,7 +27,7 @@ class _YukleniyorState extends State<Yukleniyor> {
             height: MediaQuery.of(context).size.width*2/3,
             child: Stack(children: [
               Positioned(
-                left: 7.5,
+                left: 0,
                 top: 0,
                 child: SizedBox(width: MediaQuery.of(context).size.width*2/3,
                     height: MediaQuery.of(context).size.width*2/3,
