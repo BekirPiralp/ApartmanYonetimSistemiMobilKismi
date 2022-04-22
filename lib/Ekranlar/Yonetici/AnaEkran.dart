@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
 import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/BorcServis.dart';
-import 'package:apartman_yonetim_sistemi/Servisler/DaireServis.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/TahakkukServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
@@ -149,31 +148,6 @@ int _apartman=GirenPersonel.getYonetici()?.ApartmanGet() ?? 0;
 
 class _GovdeState extends State<Govde> {
   initState() {
-    _daireSakinleri = <DaireSakini>[
-      DaireSakini.set(
-          ad: "Bekir", soyad: "Piralp", tc: "12345678910", daire: 10),
-      DaireSakini.set(
-          ad: "Deneme ad 2",
-          soyad: "Deneme soyad 3",
-          tc: "12345678911",
-          daire: 20),
-      DaireSakini.set(
-          ad: "Deneme ad 3",
-          soyad: "Deneme soyad 4",
-          tc: "12345678912",
-          daire: 30),
-      DaireSakini.set(
-          ad: "Deneme ad 4",
-          soyad: "Deneme soyad 5",
-          tc: "12345678913",
-          daire: 40),
-      DaireSakini.set(
-          ad: "Deneme ad 5",
-          soyad: "Deneme soyad 6",
-          tc: "12345678914",
-          daire: 50)
-    ];
-    _aidat = Aidat.set(tutar: Decimal.fromJson("129.9900000000000001"));
     super.initState();
     /** Aidat bilgisi alma yeri**/
     showDialog(context: context,builder: (context)=> Yukleniyor());
