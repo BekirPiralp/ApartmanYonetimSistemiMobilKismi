@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:apartman_yonetim_sistemi/Ekranlar/GiderTipleri.dart';
 import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Aidat.dart';
 import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/GiderlerServis.dart';
@@ -9,7 +11,6 @@ import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
 import '../../EntityLayer/Concrete/Gider.dart';
@@ -23,9 +24,11 @@ class TahakkukIslemleri extends StatefulWidget {
   State<TahakkukIslemleri> createState() => _TahakkukIslemleriState();
 }
 
+BuildContext? _context;
 class _TahakkukIslemleriState extends State<TahakkukIslemleri> {
   @override
   Widget build(BuildContext context) {
+    _context = context;
     var Size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey.shade500,
@@ -57,6 +60,7 @@ class UstKisim extends StatefulWidget {
 }
 
 class _UstKisimState extends State<UstKisim> {
+
   @override
   Widget build(BuildContext context) {
     final EdgeInsets _padding = MediaQuery.of(context).padding;
@@ -92,46 +96,68 @@ class _UstKisimState extends State<UstKisim> {
                 ),
               ),
               Container(
-                //color: Colors.white,
                 child: PopupMenuButton(
                     icon: const Icon(
                       Icons.menu,
                       color: Colors.white,
                       size: 40,
                     ),
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                      const PopupMenuItem(child: ListTile(
-                        leading: Icon(Icons.home),
-                        title: Text(
-                          "Ana Ekran",
-                          style: TextStyle(
-                              fontFamily: "OpenDyslexic", fontSize: 20
+                    itemBuilder: (context) => <PopupMenuEntry>[
+                          PopupMenuItem(
+                            child: ListTile(
+                              leading: Icon(Icons.home),
+                              title: Text(
+                                "Ana Ekran",
+                                style: TextStyle(
+                                    fontFamily: "OpenDyslexic", fontSize: 20),
+                              ),
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context,
+                                    "/yonetici");
+                              },
+                            ),
+
                           ),
-                        ),
-                      ),),
-                      const PopupMenuDivider(),
-                      const PopupMenuItem(child: ListTile(
-                        leading: Icon(Icons.people_alt_outlined),
-                        title: Text(
-                          "Daire İşlemleri",
-                          style: TextStyle(
-                              fontFamily: "OpenDyslexic", fontSize: 20
+                          const PopupMenuDivider(),
+                          PopupMenuItem(
+                            child: ListTile(
+                              leading: Icon(Icons.people_alt_outlined),
+                              title: Text(
+                                "Daire İşlemleri",
+                                style: TextStyle(
+                                    fontFamily: "OpenDyslexic", fontSize: 20),
+                              ),
+                              onTap: ()=>Navigator.of(context).pushNamed("/daire"),
+                            ),
                           ),
-                        ),
-                      ),),
-                      const PopupMenuDivider(),
-                      const PopupMenuItem(child: ListTile(
-                        leading: Icon(Icons.info_outline),
-                        title: Text(
-                          "Hakkında",
-                          style: TextStyle(
-                              fontFamily: "OpenDyslexic", fontSize: 20
+                          const PopupMenuDivider(),
+                          PopupMenuItem(
+                            child: ListTile(
+                              leading: Icon(Icons.info_outline),
+                              title: Text(
+                                "Hakkında",
+                                style: TextStyle(
+                                    fontFamily: "OpenDyslexic", fontSize: 20),
+                              ),
+                              onTap: ()=>Navigator.of(context).pushNamed('/hakinda'),
+                            ),
                           ),
+                          PopupMenuItem(
+                        child: ListTile(
+                          leading: Icon(Icons.exit_to_app,color: Colors.red,),
+                          title: Text(
+                            "Çıkış",
+                            style: TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                          onTap: (){
+                            GirenPersonel.temizle();
+                            Navigator.of(context).pushNamed('/');
+                          },
                         ),
-                      ),
-                      ),
-                    ]
-                ),
+                      )
+                        ]),
               ),
             ],
           ),
@@ -149,73 +175,83 @@ class Govde extends StatefulWidget {
 }
 
 Aidat? _aidat;
-Aidat _aidatKayit= Aidat();
+Aidat _aidatKayit = Aidat();
 Gider _giderKayit = Gider();
 List<GiderTip>? _giderTipleri;
 List<Gider>? _giderler;
 int _apartman = GirenPersonel.getYonetici()?.ApartmanGet() ?? 0;
+
 class _GovdeState extends State<Govde> {
   GiderTip? _dropdownValue;
+
   initState() {
-    _giderTipleri = <GiderTip>[
-      GiderTip.set(),
-      GiderTip.set(sNo:1,ad: "Elektirik",aciklama: "Elektrik faturası"),
-      GiderTip.set(sNo:2,ad: "Doğalgaz",aciklama: "Doğalgaz faturası"),
-      GiderTip.set(sNo:3,ad: "Su",aciklama: "Su faturası"),
-      GiderTip.set(sNo:4,ad:"Bakım",aciklama: "Doğlagaz bakımı")
-    ];
-    _dropdownValue=_giderTipleri![0];
+    _giderTipleri = GiderTipleri.getir;
+    _dropdownValue = _giderTipleri![0];
     super.initState();
     /** Aidat Bilgisinin alınması **/
-      /** İlk Yükleniyor efekti**/
-      yukleniyor();
-    TahakkukServisi().AidatGetir(_apartman).then((value){
+    /** İlk Yükleniyor efekti**/
+    yukleniyor();
+    TahakkukServisi().AidatGetir(_apartman).then((value) {
       setState(() {
         Navigator.of(context).pop();
         _aidat = value;
       });
-    }).catchError((hata){
+    }).catchError((hata) {
+      setState(() {
+        Navigator.of(context).pop();
+      });
       hataOldu("Aidat bilgisi getirilirken hata oluştu.", hata);
     });
 
     /** Gider Tipleri bilgisi getirme **/
-      //yukleniyor();
+    //yukleniyor();
     // Bu uygulama temel düzey olduğu için şimdilik boş bırakıyorum uygulama içi sabit de yapılabilir
     // veya gider getirme için web servise yazmak gerek
 
     /** Giderler bilgisi getirme**/
-    yukleniyor();
-    GiderlerServis().GiderGetir(_apartman).then((value){
-          setState(() {
-            Navigator.of(context).pop();
-            _giderler=value;
-          });
-      }).catchError((hata){
-        hataOldu("Giderler getirilirken hata oluştu.", hata);
+   // yukleniyor();
+    GiderlerServis().GiderGetir(_apartman).then((value) {
+      setState(() {
+        _giderler = value;
+      });
+    }).catchError((hata) {
+      hataOldu("Giderler getirilirken hata oluştu.", hata);
     });
   }
+
   /** Yükleniyor efekti ve hata göstergesi
    * Not:init state içerisi için**/
   void yukleniyor() {
     Future.delayed(Duration.zero).then((value) {
       setState(() {
-        showDialog(context: context, builder: (context){
-          return Yukleniyor();
-        });
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Yukleniyor();
+            });
       });
     });
   }
-  void hataOldu(String mesaj,hata){
+
+  void hataOldu(String mesaj, hata) {
     setState(() {
-      Navigator.of(context).pop();
-      if(hata.runtimeType==SocketException){
-        showDialog(context: context, builder: (context){
-          return HataOlustu(messaj:"Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",);
-        });
-      }else{
-        showDialog(context: context, builder: (context){
-          return HataOlustu(messaj:"${mesaj} Detay:\n${hata.toString()}",);
-        });
+      if (hata.runtimeType == SocketException) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return HataOlustu(
+                messaj:
+                    "${mesaj} Detay:\nLütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return HataOlustu(
+                messaj: "${mesaj} Detay:\n${hata.toString()}",
+              );
+            });
       }
     });
   }
@@ -256,27 +292,28 @@ class _GovdeState extends State<Govde> {
                   /** Aidat **/
                   Expanded(
                       child: Container(
-                        child: Center(
-                            child: Row(
+                    child: Center(
+                        child: Row(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                              scrollDirection: Axis.horizontal,
                               children: [
-                                Expanded(
-                                  child: ListView(
-                                      scrollDirection: Axis.horizontal,
-                                      children: [
-                                        Text(
-                                          _aidat?.TutarGet().toString()??"Bilinmiyor...",
-                                          style: const TextStyle(
-                                              color: Colors.white, fontSize: 30),
-                                        ),
-                                      ]),
-                                ),
                                 Text(
-                                  " TL",
-                                  style: TextStyle(color: Colors.white, fontSize: 30),
+                                  _aidat?.TutarGet().toString() ??
+                                      "Bilinmiyor...",
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 30),
                                 ),
-                              ],
-                            )),
-                      )),
+                              ]),
+                        ),
+                        Text(
+                          " TL",
+                          style: TextStyle(color: Colors.white, fontSize: 30),
+                        ),
+                      ],
+                    )),
+                  )),
                 ],
               ),
             ),
@@ -311,41 +348,46 @@ class _GovdeState extends State<Govde> {
                   /** Aidat Giriş **/
                   Expanded(
                       child: Container(
-                        child: Center(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    margin:EdgeInsets.only(left: 8),
-                                    child: TextField(
-                                      style: TextStyle(color:Colors.white,fontSize: 25),
-                                      decoration: InputDecoration(
-                                        labelText: "_ _ . _",
-                                        labelStyle: TextStyle(color: Colors.white,fontSize: 30)
-                                      ),
-                                      keyboardType: TextInputType.numberWithOptions(decimal: true),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(RegExp(r"[.0123456789]")),
-                                      ],
-                                      onChanged: (value){
-                                        /** gerekli işlem **/
-                                        setState(() {
-                                          if(value.isNotEmpty&&Decimal.fromJson(value)>Decimal.zero)
-                                            _aidatKayit.TutarSet(Decimal.fromJson(value));
-                                          else
-                                            _aidatKayit.TutarSet(Decimal.zero);
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  " TL",
-                                  style: TextStyle(color: Colors.white, fontSize: 30),
-                                ),
+                    child: Center(
+                        child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(left: 8),
+                            child: TextField(
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 25),
+                              decoration: InputDecoration(
+                                  labelText: "_ _ . _",
+                                  labelStyle: TextStyle(
+                                      color: Colors.white, fontSize: 30)),
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[.0123456789]")),
                               ],
-                            )),
-                      )),
+                              onChanged: (value) {
+                                /** gerekli işlem **/
+                                setState(() {
+                                  if (value.isNotEmpty &&
+                                      Decimal.fromJson(value) > Decimal.zero)
+                                    _aidatKayit.TutarSet(
+                                        Decimal.fromJson(value));
+                                  else
+                                    _aidatKayit.TutarSet(Decimal.zero);
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Text(
+                          " TL",
+                          style: TextStyle(color: Colors.white, fontSize: 30),
+                        ),
+                      ],
+                    )),
+                  )),
                 ],
               ),
             ),
@@ -375,25 +417,36 @@ class _GovdeState extends State<Govde> {
                             child: TextField(
                               decoration: InputDecoration(
                                 labelText: "Gider Tutarı",
-                                labelStyle: TextStyle(color: Colors.white,fontSize: 25),
+                                labelStyle: TextStyle(
+                                    color: Colors.white, fontSize: 25),
                               ),
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r"[.0123456789]")),
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[.0123456789]")),
                               ],
                               style: TextStyle(fontSize: 25),
-                              onChanged: (value){
+                              onChanged: (value) {
                                 setState(() {
-                                  if(value.isNotEmpty&&Decimal.fromJson(value)> Decimal.fromInt(0))
-                                    _giderKayit.TutarSet(Decimal.fromJson(value));
-                                  else{
+                                  if (value.isNotEmpty &&
+                                      Decimal.fromJson(value) >
+                                          Decimal.fromInt(0))
+                                    _giderKayit.TutarSet(
+                                        Decimal.fromJson(value));
+                                  else {
                                     _giderKayit.TutarSet(Decimal.zero);
 
-                                    showDialog(context: context, builder: (context){
-                                      return HataOlustu(messaj: "Tutar sıfırdan büyük olmalı",);
-                                    });
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return HataOlustu(
+                                            messaj:
+                                                "Tutar sıfırdan büyük olmalı",
+                                          );
+                                        });
                                   }
-
                                 });
                               },
                             ),
@@ -404,30 +457,39 @@ class _GovdeState extends State<Govde> {
                   ),
                   /** Gider Tip Seçimi **/
                   Expanded(
-                      child: Container(
+                    child: Container(
                         child: Center(
-                            child: DropdownButton(
-                              icon: const Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.black,),
-                              elevation: 30,
-                              dropdownColor: Colors.white,
-                              style: TextStyle(color: Colors.black,fontSize: 22),
-                              underline: Container(width: 2,color: Colors.blue,),
-                              value: _dropdownValue,
-                              items: _giderTipleri!.map<DropdownMenuItem<GiderTip>>((value){return DropdownMenuItem<GiderTip>(
-                                value: value,
-                                child: Text(value.AdGet()),
-                              );}).toList(),
-                              onChanged: (GiderTip? value) {
-                                //seçili gider ayarlaması yapılacak
-                                //şeçili idye bir nesne oluşturulacak.
-                                _giderKayit.TipSet(value?.SNoGet()??0);
-                                setState(() {
-                                  _dropdownValue = value;
-                                });
-                                // sısıfırıncı seçili ise duruma göre  gider eklendirile bilir
-                              },
-                            ),
-                      )),
+                      child: DropdownButton(
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle_outlined,
+                          color: Colors.black,
+                        ),
+                        elevation: 30,
+                        dropdownColor: Colors.white,
+                        style: TextStyle(color: Colors.black, fontSize: 22),
+                        underline: Container(
+                          width: 2,
+                          color: Colors.blue,
+                        ),
+                        value: _dropdownValue,
+                        items: _giderTipleri!
+                            .map<DropdownMenuItem<GiderTip>>((value) {
+                          return DropdownMenuItem<GiderTip>(
+                            value: value,
+                            child: Text(value.AdGet()),
+                          );
+                        }).toList(),
+                        onChanged: (GiderTip? value) {
+                          //seçili gider ayarlaması yapılacak
+                          //şeçili idye bir nesne oluşturulacak.
+                          _giderKayit.TipSet(value?.SNoGet() ?? 0);
+                          setState(() {
+                            _dropdownValue = value;
+                          });
+                          // sısıfırıncı seçili ise duruma göre  gider eklendirile bilir
+                        },
+                      ),
+                    )),
                   )
                 ],
               ),
@@ -456,12 +518,12 @@ class _GovdeState extends State<Govde> {
                 margin: const EdgeInsets.only(left: 40, top: 10),
                 padding: const EdgeInsets.only(left: 40, top: 40),
                 decoration: BoxDecoration(
-                  //color: Colors.white.withOpacity(0.8),
+                    //color: Colors.white.withOpacity(0.8),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(_size.width * 0.35)),
                     border: Border.all(color: Colors.greenAccent, width: 2)),
                 child: ListView.builder(
-                    itemCount: _giderler?.length??1,
+                    itemCount: _giderler?.length ?? 1,
                     itemBuilder: GiderListBuilder),
               ),
             ]),
@@ -472,8 +534,7 @@ class _GovdeState extends State<Govde> {
   }
 
   Widget GiderListBuilder(BuildContext context, int say) {
-
-    if(_giderler == null){
+    if (_giderler == null) {
       //Şuan biraz üşengeçliğim tuutu o yüzden kopyala yapıştır ;)
       //Normalde yeni bir lochal method oluşturup sadece değişenkısmı ayarlamam lazım lakin ....
       return Padding(
@@ -555,17 +616,17 @@ class _GovdeState extends State<Govde> {
       );
     }
 
-    try{
+    try {
       _giderler!.forEach((element) {
-        for(var item in _giderTipleri!){
-          if(item.SNoGet()==element.TipGet()){
+        for (var item in _giderTipleri!) {
+          if (item.SNoGet() == element.TipGet()) {
             break;
-          }else if (item == _giderTipleri!.last){
+          } else if (item == _giderTipleri!.last) {
             throw new Exception("Hata verilerde uyumsuzluk");
           }
         }
       });
-    }catch(_){
+    } catch (_) {
       // hata tanımları ve uyarılar ve  işlemleri
     }
 
@@ -594,7 +655,7 @@ class _GovdeState extends State<Govde> {
                         ),
                         Flexible(
                           child: Text(
-                            "${_giderTipleri!.where((p) => p.SNoGet()==_giderler?[say].TipGet()).first.AdGet()}",
+                            "${_giderTipleri!.where((p) => p.SNoGet() == _giderler?[say].TipGet()).first.AdGet()}",
                             style: const TextStyle(
                                 fontFamily: "OpenDyslexic", fontSize: 20),
                           ),
@@ -643,7 +704,7 @@ class _GovdeState extends State<Govde> {
                         ),
                         Flexible(
                           child: Text(
-                            "${_giderTipleri!.where((p) => p.SNoGet()==_giderler![say].TipGet()).first.AciklamaGet()}",
+                            "${_giderTipleri!.where((p) => p.SNoGet() == _giderler![say].TipGet()).first.AciklamaGet()}",
                             style: const TextStyle(
                                 fontFamily: "OpenDyslexic", fontSize: 20),
                           ),
@@ -734,72 +795,103 @@ class _AltKisimState extends State<AltKisim> {
               ),
               color: Colors.blue,
               onPress: () {
-                if(_aidatKayit.TutarGet()>Decimal.zero || _giderKayit.TutarGet()> Decimal.zero){
-                  if(_aidatKayit.TutarGet()>Decimal.zero){
-                    setState(() {
-                      showDialog(context: context, builder: (context){
+                setState(() {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
                         return Yukleniyor();
                       });
-                    });
-                    TahakkukServisi().AidatTanimla(_apartman, _aidatKayit.TutarGet()).then(
-                        (value){
-                          setState(() {
-                            Navigator.of(context).pop();
-                            if(value == true)
-                              {
-                                showDialog(context: context, builder: (context)=>Basarili());
-                                _aidat = _aidatKayit;
-                                _aidatKayit = Aidat();
-                              }
-                            else
-                              showDialog(context: context, builder: (context)=>Basarisiz());
-                          });
-                        }
-                    ).catchError((hata){
+                });
+                if (_aidatKayit.TutarGet() > Decimal.zero ||
+                    _giderKayit.TutarGet() > Decimal.zero) {
+                  if (_aidatKayit.TutarGet() > Decimal.zero) {
+
+                    TahakkukServisi()
+                        .AidatTanimla(_apartman, _aidatKayit.TutarGet())
+                        .then((value) {
                       setState(() {
                         Navigator.of(context).pop();
-                        if(hata.runtimeType == SocketException){
-                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",));
-                        }else{
-                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Aidat tanımlamada hataoluştu. Detay:\n${hata.toString()}",));
+                        if (value == true) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Basarili());
+                          _aidat = _aidatKayit;
+                          _aidatKayit = Aidat();
+                        } else
+                          showDialog(
+                              context: context,
+                              builder: (context) => Basarisiz());
+                      });
+                    }).catchError((hata) {
+                      setState(() {
+                        Navigator.of(context).pop();
+                        if (hata.runtimeType == SocketException) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => HataOlustu(
+                                    messaj:
+                                        "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+                                  ));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) => HataOlustu(
+                                    messaj:
+                                        "Aidat tanımlamada hataoluştu. Detay:\n${hata.toString()}",
+                                  ));
                         }
                       });
                     });
                   }
 
-                  if(_giderKayit.TutarGet()> Decimal.zero){
-                    showDialog(context: context, builder: (context){
-                      return Yukleniyor();
-                    });
-
-                    GiderlerServis().Olustur(_apartman, _giderKayit.TutarGet(), _giderKayit.TipGet()).then((value) {
+                  if (_giderKayit.TutarGet() > Decimal.zero) {
+                    GiderlerServis()
+                        .Olustur(_apartman, _giderKayit.TutarGet(),
+                            _giderKayit.TipGet())
+                        .then((value) {
                       setState(() {
                         Navigator.of(context).pop();
-                        if(value)
-                          {
-                            showDialog(context: context, builder: (context)=>Basarili());
-                            _giderler ??= <Gider>[];
-                            _giderler?.add(_giderKayit);
-                          }
-                        else
-                          showDialog(context: context, builder: (context)=>Basarisiz());
+                        if (value) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => Basarili());
+                          _giderler ??= <Gider>[];
+                          _giderler?.add(_giderKayit);
+                        } else
+                          showDialog(
+                              context: context,
+                              builder: (context) => Basarisiz());
                       });
-                    }).catchError((hata){
+                    }).catchError((hata) {
                       setState(() {
                         Navigator.of(context).pop();
-                        if(hata.runtimeType == SocketException){
-                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",));
-                        }else{
-                          showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Gider kaydetmede hataoluştu. Detay:\n${hata.toString()}",));
+                        if (hata.runtimeType == SocketException) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => HataOlustu(
+                                    messaj:
+                                        "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+                                  ));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) => HataOlustu(
+                                    messaj:
+                                        "Gider kaydetmede hataoluştu. Detay:\n${hata.toString()}",
+                                  ));
                         }
                       });
                     });
                   }
-                }else{
+                } else {
                   setState(() {
-                    showDialog(context: context, builder: (context){
-                      return HataOlustu(messaj:"Lütfen parametreleri eksiksiz giriniz");
-                    });
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return HataOlustu(
+                              messaj: "Lütfen parametreleri eksiksiz giriniz");
+                        });
                   });
                 }
               },
@@ -815,4 +907,3 @@ class _AltKisimState extends State<AltKisim> {
     Navigator.pop(context);
   }
 }
-

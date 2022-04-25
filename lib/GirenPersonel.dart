@@ -14,4 +14,9 @@ class GirenPersonel{
 
   static Yonetici? getYonetici()=>_yonetici;
   static DaireSakini? getDaireSakini() => _daireSakini;
+
+  static void temizle(){
+    _yonetici = null;
+    _daireSakini = null;
+  }
 }

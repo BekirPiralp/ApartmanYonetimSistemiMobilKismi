@@ -12,45 +12,55 @@ class _HakkindaState extends State<Hakkinda> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blue),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          actions: [
-            Container(
-              color: Colors.grey,
-              width: 64,
-              height: 64,
-            )
-          ],
-          leading: Container(
-            color: Colors.amberAccent,
-            width: 64,
-            height: 64,
-            child: ElevatedButton(
-              onPressed: () => {},
-              child: Icon(
-                Icons.west,
-                color: Colors.red,
-              ),
-            ),
-          ),
           title: Text("H A K K I N D A"),
           centerTitle: true,
         ),
-        body: Center(
-            child: Container(
-              color: Color(0xFFC9E3C6), //3BFF4FBF
-              child: Expanded(
-                  //flex:2,
-                  child: Center(child: Column(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                            "Selçuk Üniversitesi'nin Bilgisayar Mühendisliği Bölümün de vermiş oldukları Staj 1 Dersi kapsamında yapılmıştır."),
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                child: const Center(
+                  child: Text(
+                      "Tüm alemlerin Rabbi olan Allah(cc)'a hamdolsun. \n\nSelçuk Üniversitesi'nin Bilgisayar Mühendisliği Bölümünde verilen Staj 1 Dersi kapsamında yapılmıştır."
+                          " Yardımları ve desteklerinden dolayı Salih Abiye, Tarık Abiye, Figen Ablaya, Emrah Abiye ve Seyhan Belediyesine son olarak "
+                          "bize bu eğitimi veren Selçuk Üniversitesi ve öğretim elemanlarına en içten teşekkürlerimi eder saygılarımı sunarım.",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: "TimesNewRoman"
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10,),
+            Container(
+              child: const Text("Not: Güvenlik ve diğer sebepler sebebiyle soy isimleri yazılmamıştır.",
+              style: TextStyle(fontSize: 17.5),),
+            ),
+            SizedBox(height: 10,),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      "Bekir PİRALP",
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: "TimesNewRoman"
                       ),
-                    ],
-                  ))),
-            )
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

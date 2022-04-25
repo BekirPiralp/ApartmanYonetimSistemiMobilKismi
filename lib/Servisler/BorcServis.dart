@@ -96,8 +96,8 @@ class BorcServis {
     return result;
   }
 
-  Future<Decimal> BorcToplam(int apartman, int daireSakini) async {
-    Decimal result = Decimal.zero;
+  Future<Decimal?> BorcToplam(int apartman, int daireSakini) async {
+    Decimal? result ;//= Decimal.zero;
     try {
       http.Response response = await http.get(WebServisConnection.UrlBorcToplam(
           {"Apartman": apartman, "DaireSakini": daireSakini}),

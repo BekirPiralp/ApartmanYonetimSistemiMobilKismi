@@ -8,7 +8,7 @@ class Yukleniyor extends StatefulWidget {
 }
 
 class _YukleniyorState extends State<Yukleniyor> {
-  @override
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

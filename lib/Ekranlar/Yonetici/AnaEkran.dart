@@ -7,10 +7,10 @@ import 'package:apartman_yonetim_sistemi/Servisler/TahakkukServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 
 import '../../EntityLayer/Concrete/DaireSakini.dart';
+import '../../Widgets/IconGenisButton.dart';
 
 class AnaEkran extends StatefulWidget {
   const AnaEkran({Key? key}) : super(key: key);
@@ -23,18 +23,80 @@ class _AnaEkranState extends State<AnaEkran> {
   @override
   Widget build(BuildContext context) {
     var Size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: Size.height,
-          width: Size.width,
-          child: Container(
-            child: Column(
-              children: [
-                UstKisim(),
-                Govde(),
-              ],
+    return WillPopScope(
+      onWillPop: ()async{
+        setState(() {
+          showDialog(context: context, builder: (context){
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.all(Radius.circular(30))),
+                width: 200,
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Center(child: Text("Çıkmak istediğinize eminmisiniz?",
+                      style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)),
+                    Container(
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: IconGenisButton(
+                              "resimler/cancel.png",
+                              color: Colors.grey.shade300,
+                              text: Text(
+                                "Hayır",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPress: () {
+                                setState(() {
+                                  Navigator.of(context).pop();
+                                });
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: IconGenisButton(
+                              "resimler/tamam.png",
+                              text: const Text(
+                                "Evet",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              color: Colors.grey.shade300,
+                              onPress: () {
+                                setState(() {
+                                  Navigator.of(context).pop();
+                                  GirenPersonel.temizle();
+                                  Navigator.of(context).pushNamed("/");
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SingleChildScrollView(
+          child: SizedBox(
+            height: Size.height,
+            width: Size.width,
+            child: Container(
+              child: Column(
+                children: [
+                  UstKisim(),
+                  Govde(),
+                ],
+              ),
             ),
           ),
         ),
@@ -94,7 +156,7 @@ class _UstKisimState extends State<UstKisim> {
                       size: 40,
                     ),
                     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                      const PopupMenuItem(child: ListTile(
+                       PopupMenuItem(child: ListTile(
                             leading: Icon(Icons.people_alt_outlined),
                             title: Text(
                               "Daire İşlemleri",
@@ -102,9 +164,13 @@ class _UstKisimState extends State<UstKisim> {
                                   fontFamily: "OpenDyslexic", fontSize: 20
                               ),
                             ),
-                          ),),
+                         onTap: (){
+                           Navigator.pushNamed(context, "/daire");
+                         },
+                          ),
+                      ),
                       const PopupMenuDivider(),
-                      const PopupMenuItem(child: ListTile(
+                      PopupMenuItem(child: ListTile(
                             leading: Icon(Icons.home_work_outlined),
                             title: Text(
                               "Tahakkuk",
@@ -112,9 +178,11 @@ class _UstKisimState extends State<UstKisim> {
                                   fontFamily: "OpenDyslexic", fontSize: 20
                               ),
                             ),
-                          ),),
+                        onTap: ()=> Navigator.of(context).pushNamed("/tahakkuk")
+                      ),
+                      ),
                       const PopupMenuDivider(),
-                      const PopupMenuItem(child: ListTile(
+                      PopupMenuItem(child: ListTile(
                             leading: Icon(Icons.info_outline),
                             title: Text(
                               "Hakkında",
@@ -122,8 +190,23 @@ class _UstKisimState extends State<UstKisim> {
                                   fontFamily: "OpenDyslexic", fontSize: 20
                               ),
                             ),
+                          onTap: ()=>Navigator.of(context).pushNamed('/hakinda'),
                           ),
                       ),
+                      PopupMenuItem(
+                        child: ListTile(
+                          leading: Icon(Icons.exit_to_app,color: Colors.red,),
+                          title: Text(
+                            "Çıkış",
+                            style: TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                          onTap: (){
+                            GirenPersonel.temizle();
+                            Navigator.of(context).pushNamed('/');
+                          },
+                        ),
+                      )
                     ]
                 ),
               ),
@@ -147,10 +230,16 @@ Aidat? _aidat;
 int _apartman=GirenPersonel.getYonetici()?.ApartmanGet() ?? 0;
 
 class _GovdeState extends State<Govde> {
+  @override
   initState() {
     super.initState();
+
     /** Aidat bilgisi alma yeri**/
-    showDialog(context: context,builder: (context)=> Yukleniyor());
+    Future.delayed(Duration.zero).then((value) {
+    setState(() {
+    showDialog(context: context, builder: (context)=>Yukleniyor());
+    });
+    });
     TahakkukServisi().AidatGetir(_apartman).then((value)=> setState(() {
          Navigator.of(context).pop();
          _aidat=value;
@@ -163,12 +252,12 @@ class _GovdeState extends State<Govde> {
       }));
 
     /** Borçlu daire sakinleri alma kısmı **/
-    showDialog(context: context, builder: (conetxt)=>Yukleniyor());
+    //showDialog(context: context, builder: (conetxt)=>Yukleniyor());
     BorcServis().BorcBorclular(_apartman).then((value)=> setState(() {
-        Navigator.of(context).pop();
+        //Navigator.of(context).pop();
         _daireSakinleri = value;
       })).catchError((hata)=> setState(() {
-        Navigator.of(context).pop();
+        //Navigator.of(context).pop();
         if(hata.runtimeType == SocketException)
           showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz.",));
         else
@@ -261,7 +350,7 @@ class _GovdeState extends State<Govde> {
                         topLeft: Radius.circular(_size.width * 0.35)),
                     border: Border.all(color: Colors.greenAccent, width: 2)),
                 child: ListView.builder(
-                    itemCount: _daireSakinleri?.length,
+                    itemCount: _daireSakinleri?.length??1,
                     itemBuilder: BorcListBuilder),
               ),
             ]),
@@ -273,7 +362,7 @@ class _GovdeState extends State<Govde> {
 
   Widget BorcListBuilder(BuildContext context, int say) {
 
-    if(_daireSakinleri == null){
+    if(_daireSakinleri == null || (_daireSakinleri != null && _daireSakinleri!.isEmpty)){
       return Padding(
         padding: const EdgeInsets.only(bottom: 8, top: 8, right: 10),
         child: Container(
@@ -355,6 +444,7 @@ class _GovdeState extends State<Govde> {
         ),
       );
     }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 8, right: 10),
       child: Container(

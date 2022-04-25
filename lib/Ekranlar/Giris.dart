@@ -22,145 +22,148 @@ class _GirisState extends State<Giris> {
   Widget build(BuildContext context) {
     ustBosluk = MediaQuery.of(context).size.height * 0.045;
 
-    return Stack(
-      children: [
-        Image(image: AssetImage('resimler/giris.jpeg'),height: MediaQuery.of(context).size.height,),
-        SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height-MediaQuery.of(context).padding.top,
-                child: Column(
+    return WillPopScope(
+      onWillPop: () async => false, //Geriye bastığında gitmeyecek
+      child: Stack(
+        children: [
+          Image(image: AssetImage('resimler/giris.jpeg'),height: MediaQuery.of(context).size.height,),
+          SafeArea(
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height-MediaQuery.of(context).padding.top,
+                  child: Column(
 
-                  children: <Widget>[
-                    _uStKisim(),
-                    const Expanded(flex: 1, child: SizedBox()),
-                    Expanded(
-                        flex: 11,
-                        child: Row(
-                          children: [
-                            /** Ekranı dikeylemesine ayrıma boşluk **/
-                            const Expanded(flex: 1, child: SizedBox()),
-                            /** İçerik kısmı**/
-                            Expanded(
-                                flex: 3,
-                                child: Container(
-                                  margin: const EdgeInsets.all(5),
-                                  //dış boşluk
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 57, horizontal: 8),
-                                  //iç boşluk
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(
-                                            MediaQuery.of(context).size.height *
-                                                0.20),
-                                        topRight: const Radius.circular(10),
-                                        bottomRight: const Radius.circular(50)),
-                                    //borderRadius: BorderRadius.circular(300),
-                                    color: Colors.white.withOpacity(0.25),
-                                  ),
-                                  //child: Container(color: Colors.red,),
-                                  //color: Colors.white.withOpacity(0.25),
-                                  child: Column(
-                                    children: [
-                                      const Expanded(
-                                          flex: 2, child: SizedBox()),
-                                      /** Soru ve switch **/
-                                      Row(
-                                        children: [
-                                          const Expanded(child: SizedBox()),
-                                          const Text(
-                                            "Yönetici mi ..?",
-                                            style: TextStyle(
-                                              fontFamily: 'OpenDyslexic',
-                                              fontWeight: FontWeight.bold,
-                                              fontStyle: FontStyle.italic,
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Switch(
-                                              value: status,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  status = value;
-                                                });
-                                              }),
-                                          const Expanded(child: SizedBox()),
-                                        ],
-                                      ),
-                                      /** TC kimlik bilgisi alanı **/
-                                      Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            5, 0, 25, 0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.9),
-                                          borderRadius:
-                                          const BorderRadius.horizontal(
-                                              left: Radius.circular(45),
-                                              right: Radius.circular(45)),
-                                        ),
-                                        child: Row(
+                    children: <Widget>[
+                      _uStKisim(),
+                      const Expanded(flex: 1, child: SizedBox()),
+                      Expanded(
+                          flex: 11,
+                          child: Row(
+                            children: [
+                              /** Ekranı dikeylemesine ayrıma boşluk **/
+                              const Expanded(flex: 1, child: SizedBox()),
+                              /** İçerik kısmı**/
+                              Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    //dış boşluk
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 57, horizontal: 8),
+                                    //iç boşluk
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(
+                                              MediaQuery.of(context).size.height *
+                                                  0.20),
+                                          topRight: const Radius.circular(10),
+                                          bottomRight: const Radius.circular(50)),
+                                      //borderRadius: BorderRadius.circular(300),
+                                      color: Colors.white.withOpacity(0.25),
+                                    ),
+                                    //child: Container(color: Colors.red,),
+                                    //color: Colors.white.withOpacity(0.25),
+                                    child: Column(
+                                      children: [
+                                        const Expanded(
+                                            flex: 2, child: SizedBox()),
+                                        /** Soru ve switch **/
+                                        Row(
                                           children: [
-                                            const Image(
-                                              image: AssetImage(
-                                                  "resimler/user64.png"),
-                                            ),
-                                            Expanded(
-                                              child: TextFormField(
-                                                decoration:
-                                                const InputDecoration(
-                                                  //icon: Image(image: AssetImage("resimler/user64.png"),),
-                                                  labelText: "TC kimlik no:",
-                                                ),
-                                                keyboardType:
-                                                TextInputType.number,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly
-                                                ],
-                                                maxLength: 11,
-                                                onChanged: _girdi,
+                                            const Expanded(child: SizedBox()),
+                                            const Text(
+                                              "Yönetici mi ..?",
+                                              style: TextStyle(
+                                                fontFamily: 'OpenDyslexic',
+                                                fontWeight: FontWeight.bold,
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 18,
+                                                color: Colors.black,
                                               ),
                                             ),
+                                            Switch(
+                                                value: status,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    status = value;
+                                                  });
+                                                }),
+                                            const Expanded(child: SizedBox()),
                                           ],
                                         ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      /** Giriş butonu **/
-                                      GenisButton("Giriş", () {},),
-                                      /*Container(
-                                            height: MediaQuery.of(context).size.height*0.07,
-                                            width: MediaQuery.of(context).size.width*0.70,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.green,
-                                              borderRadius:  BorderRadius.horizontal(
+                                        /** TC kimlik bilgisi alanı **/
+                                        Container(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 0, 25, 0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.9),
+                                            borderRadius:
+                                            const BorderRadius.horizontal(
                                                 left: Radius.circular(45),
-                                                right: Radius.circular(45)
-                                              )
-                                            ),
-                                            child: TextButton(
-                                                onPressed: () {},
-                                                child: const Text("Giriş",style: TextStyle(color: Colors.white,
-                                                fontSize: 14,),)),
-                                          ),*/
-                                      const Expanded(flex: 2, child: SizedBox())
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        )),
-                    _altKisim()
+                                                right: Radius.circular(45)),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Image(
+                                                image: AssetImage(
+                                                    "resimler/user64.png"),
+                                              ),
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration:
+                                                  const InputDecoration(
+                                                    //icon: Image(image: AssetImage("resimler/user64.png"),),
+                                                    labelText: "TC kimlik no:",
+                                                  ),
+                                                  keyboardType:
+                                                  TextInputType.number,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter
+                                                        .digitsOnly
+                                                  ],
+                                                  maxLength: 11,
+                                                  onChanged: _girdi,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const Expanded(child: SizedBox()),
+                                        /** Giriş butonu **/
+                                        GenisButton("Giriş", () {},),
+                                        /*Container(
+                                              height: MediaQuery.of(context).size.height*0.07,
+                                              width: MediaQuery.of(context).size.width*0.70,
+                                              decoration: const BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:  BorderRadius.horizontal(
+                                                  left: Radius.circular(45),
+                                                  right: Radius.circular(45)
+                                                )
+                                              ),
+                                              child: TextButton(
+                                                  onPressed: () {},
+                                                  child: const Text("Giriş",style: TextStyle(color: Colors.white,
+                                                  fontSize: 14,),)),
+                                            ),*/
+                                        const Expanded(flex: 2, child: SizedBox())
+                                      ],
+                                    ),
+                                  ))
+                            ],
+                          )),
+                      _altKisim()
 
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -172,6 +175,14 @@ class _GirisState extends State<Giris> {
           height: ikonSize,
           child: Row(
             children: [
+              Container(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: IconButton(
+                    icon: Icon(Icons.info_outline,color: Colors.white,size: ikonSize,),
+                    onPressed: (){
+                      Navigator.of(context).pushNamed('/hakinda');
+                    },
+                  )),
               Expanded(
                 child: Container(
                     //color: Colors.red.withOpacity(0.5),

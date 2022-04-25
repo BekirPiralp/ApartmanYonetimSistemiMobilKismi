@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:apartman_yonetim_sistemi/Ekranlar/Yonetici/AnaEkran.dart' as yntci;
 import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/DaireServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/services.dart';
 
 import '../../EntityLayer/Concrete/DaireSakini.dart';
 import '../../Widgets/IconGenisButton.dart';
+import 'TahakkukIslemleri.dart';
 
 class DaireIslemleri extends StatefulWidget {
   const DaireIslemleri({Key? key}) : super(key: key);
@@ -94,7 +96,7 @@ class _UstKisimState extends State<UstKisim> {
                       size: 40,
                     ),
                     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             child: ListTile(
                               leading: Icon(Icons.home),
                               title: Text(
@@ -102,10 +104,11 @@ class _UstKisimState extends State<UstKisim> {
                                 style: TextStyle(
                                     fontFamily: "OpenDyslexic", fontSize: 20),
                               ),
+                              onTap: ()=>Navigator.of(context).pushNamed('/yonetici'),
                             ),
                           ),
                           const PopupMenuDivider(),
-                          const PopupMenuItem(
+                           PopupMenuItem(
                             child: ListTile(
                               leading: Icon(Icons.home_work_outlined),
                               title: Text(
@@ -113,10 +116,11 @@ class _UstKisimState extends State<UstKisim> {
                                 style: TextStyle(
                                     fontFamily: "OpenDyslexic", fontSize: 20),
                               ),
+                              onTap: ()=>Navigator.of(context).pushNamed('/tahakkuk'),
                             ),
-                          ),
+                           ),
                           const PopupMenuDivider(),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             child: ListTile(
                               leading: Icon(Icons.info_outline),
                               title: Text(
@@ -124,8 +128,23 @@ class _UstKisimState extends State<UstKisim> {
                                 style: TextStyle(
                                     fontFamily: "OpenDyslexic", fontSize: 20),
                               ),
+                              onTap: ()=>Navigator.of(context).pushNamed('/hakinda'),
                             ),
                           ),
+                          PopupMenuItem(
+                        child: ListTile(
+                          leading: Icon(Icons.exit_to_app,color: Colors.red,),
+                          title: Text(
+                            "Çıkış",
+                            style: TextStyle(
+                                fontFamily: "OpenDyslexic", fontSize: 20),
+                          ),
+                          onTap: (){
+                            GirenPersonel.temizle();
+                            Navigator.of(context).pushNamed('/');
+                          },
+                        ),
+                      )
                         ]),
               ),
             ],
