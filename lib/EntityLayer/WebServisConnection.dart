@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 class WebServisConnection {
   static const String _scheme = "http://";

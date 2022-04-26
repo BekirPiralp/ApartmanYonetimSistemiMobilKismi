@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:apartman_yonetim_sistemi/Ekranlar/Yonetici/AnaEkran.dart' as yntci;
 import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/DaireServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/DefterEffect.dart';
@@ -12,7 +10,6 @@ import 'package:flutter/services.dart';
 
 import '../../EntityLayer/Concrete/DaireSakini.dart';
 import '../../Widgets/IconGenisButton.dart';
-import 'TahakkukIslemleri.dart';
 
 class DaireIslemleri extends StatefulWidget {
   const DaireIslemleri({Key? key}) : super(key: key);

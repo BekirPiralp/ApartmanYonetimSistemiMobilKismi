@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/Ekranlar/GiderTipleri.dart';
@@ -24,11 +23,10 @@ class TahakkukIslemleri extends StatefulWidget {
   State<TahakkukIslemleri> createState() => _TahakkukIslemleriState();
 }
 
-BuildContext? _context;
+
 class _TahakkukIslemleriState extends State<TahakkukIslemleri> {
   @override
   Widget build(BuildContext context) {
-    _context = context;
     var Size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey.shade500,

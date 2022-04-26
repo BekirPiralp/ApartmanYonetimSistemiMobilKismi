@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';

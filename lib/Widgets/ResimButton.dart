@@ -8,8 +8,11 @@ class ResimButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Image(
-        image: AssetImage(image),
+      child: Container(
+        constraints: BoxConstraints(minWidth: 40,minHeight: 40),
+        child: Image(
+          image: AssetImage(image),
+        ),
       ),
       onTap: onTap,
 

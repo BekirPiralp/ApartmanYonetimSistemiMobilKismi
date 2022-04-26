@@ -5,13 +5,13 @@ import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
 import 'package:apartman_yonetim_sistemi/Servisler/GirisServis.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
 import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../Widgets/GenisButton.dart';
 import '../Widgets/IconGenisButton.dart';
 import '../Widgets/ResimButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 double ustBosluk = 25;
 const double ikonSize = 32;
@@ -297,7 +297,7 @@ class _GirisState extends State<Giris> {
           height: ustBosluk,
         ),*/
         SizedBox(
-          height: ikonSize,
+          height: ikonSize*2,
           child: Row(
             children: [
               Container(
@@ -331,39 +331,34 @@ class _GirisState extends State<Giris> {
           ResimButton(
             'resimler/facebook.png',
             onTap: () async {
-              await launch("https://tr-tr.facebook.com/bekir.piralp.9");
+              await launchUrlString("https://tr-tr.facebook.com/bekir.piralp.9");
             },
           ),
           const Expanded(child: SizedBox()),
           ResimButton(
             'resimler/instagram.png',
             onTap: () async {
-              await launch("https://www.instagram.com/bekir01piralp/");
+              await launchUrlString("https://www.instagram.com/bekir01piralp/");
             },
           ),
           const Expanded(child: SizedBox()),
           ResimButton(
             'resimler/linkedin.png',
             onTap: () async {
-              await launch("https://tr.linkedin.com/in/bekir-piralp-26bbab171");
+              await launchUrlString("https://tr.linkedin.com/in/bekir-piralp-26bbab171");
             },
           ),
           const Expanded(child: SizedBox()),
           ResimButton(
             'resimler/github.png',
             onTap: () async {
-              await launch("https://github.com/BekirPiralp");
+              await launchUrlString("https://github.com/BekirPiralp");
             },
           ),
           const Expanded(child: SizedBox())
         ],
       ));
 
-  facebook() {
-    () async {
-      await launch("www.google.com");
-    };
-  }
 
   _girdi(String deger) {
     if(deger.isNotEmpty&&deger.length==11){
