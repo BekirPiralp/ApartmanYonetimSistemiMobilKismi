@@ -18,7 +18,7 @@ class TahakkukServisi {
       if (response.statusCode == ResponseKod.basarili) {
         List<Map<String,dynamic>> decode= List<Map<String,dynamic>>.from(jsonDecode(response.body));
         if(decode.isNotEmpty){
-          result = List<Aidat?>.from(decode
+          result = List<Aidat>.from(decode
               .map((json) => Aidat.cevirJsonMapdanNesne(json))
               .toList()) // cast<Aidat> yapmaz isek dinamik liste dönüyor ve buda hata oluşturuyor
               .first; // aidat üründe bir veya birçok nesne gelecek
