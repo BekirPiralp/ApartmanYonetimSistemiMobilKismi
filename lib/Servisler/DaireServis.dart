@@ -79,11 +79,10 @@ class DaireServisi {
           WebServisConnection.UrlDaireSakinleriGetir(queryparams),
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> json = jsonDecode(response.body)as List<Map<String,dynamic>>;
+        List json = jsonDecode(response.body);
 
         if (json.isNotEmpty) {
-          result = List.from(json.map((e) => Daire.cevirJsonMapdanNesne(e)));
-          //result = json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast();
+          result = json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast<DaireSakini>();
         }
       }else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +

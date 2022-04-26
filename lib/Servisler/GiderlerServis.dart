@@ -67,9 +67,9 @@ class GiderlerServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> listJson = jsonDecode(response.body) as List<Map<String,dynamic>>; //dinamic liste
+        List listJson = jsonDecode(response.body); //dinamic liste
         if (listJson.isNotEmpty) {
-          result = listJson.map(_cevirici(json)).toList().cast();
+          result = listJson.map(_cevirici(json)).toList().cast<Gider>();
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -95,9 +95,9 @@ class GiderlerServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> listJson = jsonDecode(response.body)as List<Map<String,dynamic>>; //dinamic liste
+        List listJson = jsonDecode(response.body); //dinamic liste
         if (listJson.isNotEmpty) {
-          result = listJson.map(_cevirici(json)).toList().cast();
+          result = listJson.map(_cevirici(json)).toList().cast<Gider>();
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +

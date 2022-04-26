@@ -16,11 +16,13 @@ class TahakkukServisi {
           //+"?apartman=${apartman}",
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> decode = jsonDecode(response.body) as List<Map<String,dynamic>>;
-        result = decode
-            .map((json) => Aidat.cevirJsonMapdanNesne(json))
-            .toList()
-            .first; // aidat üründe bir veya birçok nesne gelecek
+        List decode = jsonDecode(response.body) ;
+        if(decode.isNotEmpty){
+          result = decode
+              .map((json) => Aidat.cevirJsonMapdanNesne(json))
+              .toList().cast<Aidat>() // cast<Aidat> yapmaz isek dinamik liste dönüyor ve buda hata oluşturuyor
+              .first; // aidat üründe bir veya birçok nesne gelecek
+        }
 
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
