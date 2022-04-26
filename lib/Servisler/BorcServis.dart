@@ -18,9 +18,9 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = List<Map<String,dynamic>>.from(jsonDecode(response.body));
         if (responseJson.isNotEmpty) {
-          result = ((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList()).cast<Borc>();
+          result = List<Borc>.from((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -46,9 +46,9 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = List<Map<String,dynamic>>.from(jsonDecode(response.body));
         if (responseJson.isNotEmpty) {
-          result = ((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList()).cast<Borc>();
+          result = List<Borc>.from((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -74,9 +74,9 @@ class BorcServis {
 
       if (response.statusCode == ResponseKod.basarili) {
 
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = List<Map<String,dynamic>>.from(jsonDecode(response.body));
         if (responseJson.isNotEmpty) {
-          result = ((responseJson.map((json) => DaireSakini.cevirJsonMapdanNesne(json))).toList()).cast<DaireSakini>();
+          result = List<DaireSakini>.from((responseJson.map((json) => DaireSakini.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +

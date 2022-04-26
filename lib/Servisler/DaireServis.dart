@@ -8,8 +8,7 @@ import '../EntityLayer/Concrete/Daire.dart';
 import 'package:http/http.dart' as http;
 
 class DaireServisi {
-  Future<bool> DaireTanimlaNesne(
-      int apartman, DaireSakini daireSakini, Daire daire) async {
+  Future<bool> DaireTanimlaNesne(int apartman, DaireSakini daireSakini, Daire daire) async {
     bool result = false;
     try {
       Map<String, dynamic> queryparams = {"apartman": apartman};
@@ -36,8 +35,7 @@ class DaireServisi {
     return result;
   }
 
-  Future<bool> DaireTanimlaSno(
-      int apartman, DaireSakini daireSakini, int daireSno) async {
+  Future<bool> DaireTanimlaSno(int apartman, DaireSakini daireSakini, int daireSno) async {
     bool result = false;
     try {
       Map<String, dynamic> queryparams = daireSakini.cevirNesnedenJsonMap();
@@ -78,10 +76,10 @@ class DaireServisi {
           WebServisConnection.UrlDaireSakinleriGetir(queryparams),
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List json = jsonDecode(response.body);
+        List<Map<String,dynamic>> json = List<Map<String,dynamic>>.from(jsonDecode(response.body));
 
         if (json.isNotEmpty) {
-          result = json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast<DaireSakini>();
+          result = List<DaireSakini>.from(json.map((e) => DaireSakini.cevirJsonMapdanNesne(e)).toList());
         }
       }else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
