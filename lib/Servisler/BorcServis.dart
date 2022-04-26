@@ -18,11 +18,9 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = jsonDecode(response.body)as List<Map<String,dynamic>>;
         if (responseJson.isNotEmpty) {
-          result = responseJson
-              .map((json) => Borc.cevirJsonMapdanNesne(json))
-              .toList();
+          result = ((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -34,7 +32,7 @@ class BorcServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     }catch (hata) {
-      throw Exception("Ödenmemiş borçlar getirilirken hata oluştu");
+      throw Exception("Ödenmemiş borçlar getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -48,9 +46,9 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = jsonDecode(response.body)as List<Map<String,dynamic>>;
         if (responseJson.isNotEmpty) {
-          result = responseJson.toList().cast();
+          result = ((responseJson.map((json) => Borc.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -62,7 +60,7 @@ class BorcServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     }catch (hata) {
-      throw Exception("Ödenmemiş borçlar getirilirken hata oluştu");
+      throw Exception("Ödenmemiş borçlar getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -75,11 +73,9 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List responseJson = jsonDecode(response.body);
+        List<Map<String,dynamic>> responseJson = jsonDecode(response.body)as List<Map<String,dynamic>>;
         if (responseJson.isNotEmpty) {
-          result = responseJson
-              .map((jsonObj) => DaireSakini.cevirJsonMapdanNesne(jsonObj))
-              .toList();
+          result = ((responseJson.map((json) => DaireSakini.cevirJsonMapdanNesne(json))).toList());
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -91,7 +87,7 @@ class BorcServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     }catch (hata) {
-      throw Exception("Borclular getirilirken hata oluştu");
+      throw Exception("Borclular getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -104,7 +100,7 @@ class BorcServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        var json = jsonDecode(response.body);
+        String json = jsonDecode(response.body).toString();
         result = Decimal.fromJson(json);
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -116,7 +112,7 @@ class BorcServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     }catch (hata) {
-      throw Exception("Toplam borç getirilirken hata oluştu");
+      throw Exception("Toplam borç getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -146,7 +142,7 @@ class BorcServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     }catch (hata) {
-      throw Exception("Borç ödeme esnasında hata oluştu");
+      throw Exception("Borç ödeme esnasında hata oluştu"+hata.toString());
     }
     return result;
   }

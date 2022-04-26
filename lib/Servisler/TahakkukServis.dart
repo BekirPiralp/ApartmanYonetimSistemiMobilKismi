@@ -16,7 +16,7 @@ class TahakkukServisi {
           //+"?apartman=${apartman}",
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List decode = jsonDecode(response.body);
+        List<Map<String,dynamic>> decode = jsonDecode(response.body) as List<Map<String,dynamic>>;
         result = decode
             .map((json) => Aidat.cevirJsonMapdanNesne(json))
             .toList()
@@ -32,7 +32,7 @@ class TahakkukServisi {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("veri getirilirken hata oluştu");
+      throw Exception("veri getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -57,7 +57,7 @@ class TahakkukServisi {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Aidat Tanımlanırken bir hata oluştu");
+      throw Exception("Aidat Tanımlanırken bir hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -81,7 +81,7 @@ class TahakkukServisi {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Tahakkuk olusturulurken hata olustu");
+      throw Exception("Tahakkuk olusturulurken hata olustu"+hata.toString());
     }
     return result;
   }

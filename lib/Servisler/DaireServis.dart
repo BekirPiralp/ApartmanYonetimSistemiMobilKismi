@@ -32,7 +32,7 @@ class DaireServisi {
     } on SocketException {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Daire tanımlanırken hata oluştu");
+      throw Exception("Daire tanımlanırken hata oluştu "+hata.toString());
     }
     return result;
   }
@@ -79,11 +79,11 @@ class DaireServisi {
           WebServisConnection.UrlDaireSakinleriGetir(queryparams),
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List json = jsonDecode(response.body);
+        List<Map<String,dynamic>> json = jsonDecode(response.body)as List<Map<String,dynamic>>;
 
         if (json.isNotEmpty) {
-          result =
-              json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast();
+          result = List.from(json.map((e) => Daire.cevirJsonMapdanNesne(e)));
+          //result = json.map((e) => Daire.cevirJsonMapdanNesne(e)).toList().cast();
         }
       }else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -94,7 +94,7 @@ class DaireServisi {
     } on SocketException {
       throw SocketException("Bağlantı hatası oluştu.");
     } catch (hata) {
-      throw Exception("Daire sakinleri getirilirken hata oluştu.");
+      throw Exception("Daire sakinleri getirilirken hata oluştu."+hata.toString());
     }
 
     return result;

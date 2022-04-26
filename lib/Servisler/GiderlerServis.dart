@@ -28,7 +28,7 @@ class GiderlerServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Gider oluştururken hata oluştu");
+      throw Exception("Gider oluştururken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -54,7 +54,7 @@ class GiderlerServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw new Exception("Gider oluştururken hata oluştu");
+      throw new Exception("Gider oluştururken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -67,7 +67,7 @@ class GiderlerServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List listJson = jsonDecode(response.body); //dinamic liste
+        List<Map<String,dynamic>> listJson = jsonDecode(response.body) as List<Map<String,dynamic>>; //dinamic liste
         if (listJson.isNotEmpty) {
           result = listJson.map(_cevirici(json)).toList().cast();
         }
@@ -81,7 +81,7 @@ class GiderlerServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw new Exception("Giderler gietirilirken hata oluştu");
+      throw new Exception("Giderler gietirilirken hata oluştu "+hata.toString());
     }
     return result;
   }
@@ -95,7 +95,7 @@ class GiderlerServis {
           headers: WebServisConnection.baslik);
 
       if (response.statusCode == ResponseKod.basarili) {
-        List listJson = jsonDecode(response.body); //dinamic liste
+        List<Map<String,dynamic>> listJson = jsonDecode(response.body)as List<Map<String,dynamic>>; //dinamic liste
         if (listJson.isNotEmpty) {
           result = listJson.map(_cevirici(json)).toList().cast();
         }
@@ -109,7 +109,7 @@ class GiderlerServis {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw new Exception("Giderler gietirilirken hata oluştu");
+      throw new Exception("Giderler gietirilirken hata oluştu"+hata.toString());
     }
     return result;
   }

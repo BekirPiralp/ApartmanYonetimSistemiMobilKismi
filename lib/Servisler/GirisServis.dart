@@ -6,7 +6,7 @@ import 'package:apartman_yonetim_sistemi/EntityLayer/Concrete/Yonetici.dart';
 import 'package:apartman_yonetim_sistemi/EntityLayer/WebServisConnection.dart';
 import 'package:http/http.dart' as http;
 
-class Giris {
+class GirisServisi {
   Future<Yonetici?> GetirYonetici(String Tc) async {
     Yonetici? result;
 
@@ -27,7 +27,7 @@ class Giris {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Yonetici getirilirken hata oluştu");
+      throw Exception("Yonetici getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }
@@ -52,7 +52,7 @@ class Giris {
     {
       throw SocketException("Bağlantı hatası oluştu");
     } catch (hata) {
-      throw Exception("Daire Sakini getirilirken hata oluştu");
+      throw Exception("Daire Sakini getirilirken hata oluştu"+hata.toString());
     }
     return result;
   }

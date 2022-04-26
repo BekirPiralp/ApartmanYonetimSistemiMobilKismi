@@ -38,7 +38,7 @@ class Gider extends Entity{
   @override
   Gider.cevirJsonMapdanNesne(Map<String, dynamic> json):super.cevirJsonMapdanNesne(json){
     _Apartman = int.parse(json["Apartman"].toString());
-    _Tutar = Decimal.fromJson(json["Tutar"].toString());
+    _Tutar = Decimal.parse(json["Tutar"]);
     _Ay = int.parse(json["Ay"].toString());
     _Yil = int.parse(json["Yil"].toString());
     _Tip = int.parse(json["Tip"].toString());

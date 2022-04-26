@@ -1,6 +1,13 @@
-import 'dart:ffi';
+
+import 'dart:io';
+
+import 'package:apartman_yonetim_sistemi/GirenPersonel.dart';
+import 'package:apartman_yonetim_sistemi/Servisler/GirisServis.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Tamalandi.dart';
+import 'package:apartman_yonetim_sistemi/Widgets/Yukleniyor.dart';
 
 import '../Widgets/GenisButton.dart';
+import '../Widgets/IconGenisButton.dart';
 import '../Widgets/ResimButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 double ustBosluk = 25;
 const double ikonSize = 32;
+String? _girenSakinTc;
 
 class Giris extends StatefulWidget {
   const Giris({Key? key}) : super(key: key);
@@ -23,7 +31,65 @@ class _GirisState extends State<Giris> {
     ustBosluk = MediaQuery.of(context).size.height * 0.045;
 
     return WillPopScope(
-      onWillPop: () async => false, //Geriye bastığında gitmeyecek
+       //Geriye bastığında gitmeyecek
+      onWillPop: ()async{
+        setState(() {
+          showDialog(context: context, builder: (context){
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.all(Radius.circular(30))),
+                width: 200,
+                height: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Center(child: Text("Çıkmak istediğinize eminmisiniz?",
+                      style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)),
+                    Container(
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: IconGenisButton(
+                              "resimler/cancel.png",
+                              color: Colors.grey.shade300,
+                              text: Text(
+                                "Hayır",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPress: () {
+                                setState(() {
+                                  Navigator.of(context).pop();
+                                });
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: IconGenisButton(
+                              "resimler/tamam.png",
+                              text: const Text(
+                                "Evet",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              color: Colors.grey.shade300,
+                              onPress: () {
+                                setState(() {
+                                 exit(0);//Sıfır normal kapatma
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),),
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+        return false;
+      },
       child: Stack(
         children: [
           Image(image: AssetImage('resimler/giris.jpeg'),height: MediaQuery.of(context).size.height,),
@@ -132,30 +198,89 @@ class _GirisState extends State<Giris> {
                                         ),
                                         const Expanded(child: SizedBox()),
                                         /** Giriş butonu **/
-                                        GenisButton("Giriş", () {},),
-                                        /*Container(
-                                              height: MediaQuery.of(context).size.height*0.07,
-                                              width: MediaQuery.of(context).size.width*0.70,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.green,
-                                                borderRadius:  BorderRadius.horizontal(
-                                                  left: Radius.circular(45),
-                                                  right: Radius.circular(45)
-                                                )
-                                              ),
-                                              child: TextButton(
-                                                  onPressed: () {},
-                                                  child: const Text("Giriş",style: TextStyle(color: Colors.white,
-                                                  fontSize: 14,),)),
-                                            ),*/
+                                        GenisButton("Giriş", () {
+                                          if(_girenSakinTc != null){
+                                            if(status) {
+                                              /** Yönetici giriş **/
+                                              setState(() {
+                                                showDialog(context: context, builder: (context)=>Yukleniyor());
+                                              });
+                                              GirisServisi().GetirYonetici(
+                                                  _girenSakinTc!).then((value) {
+                                                    setState(() {
+                                                      Navigator.of(context).pop();
+                                                    });
+                                                if (value != null) {
+                                                  GirenPersonel.temizle();
+                                                  GirenPersonel.setYonetici(
+                                                      value);
+                                                  Navigator.of(context)
+                                                      .pushNamed("/yonetici");
+                                                } else {
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Aradığınız TC'li bir kayıt bulunamadı",));
+                                                  });
+                                                }
+                                              }).catchError((hata) {
+                                                setState(() {
+                                                  Navigator.of(context).pop();
+                                                });
+                                                if(hata.runtimeType == SocketException){
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz.",));
+                                                  });
+                                                }else{
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Yöneticinin bilgileri getirilirken hata oluştu. Detay:\n${hata.toString()}",));
+                                                  });
+                                                }
+                                              });
+                                            }else{
+                                              /** Daire Sakini giriş **/
+                                              setState(() {
+                                                showDialog(context: context, builder: (context)=>Yukleniyor());
+                                              });
+                                              GirisServisi().GetirDaireSakini(_girenSakinTc!).then((value){
+                                                setState(() {
+                                                  Navigator.of(context).pop();
+                                                });
+                                                if(value != null){
+                                                  GirenPersonel.temizle();
+                                                  GirenPersonel.setDaireSakini(value);
+                                                  Navigator.of(context).pushNamed("/daireSakini");
+                                                }else{
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Aradığınız TC'li bir kayıt bulunamadı",));
+                                                  });
+                                                }
+                                              }).catchError((hata){
+                                                setState(() {
+                                                  Navigator.of(context).pop();
+                                                });
+                                                if(hata.runtimeType == SocketException){
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen internet bağlantınızı kontrol ediniz.",));
+                                                  });
+                                                }else{
+                                                  setState((){
+                                                    showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Daire sakininin bilgileri getirilirken hata oluştu. Detay:\n${hata.toString()}",));
+                                                  });
+                                                }
+                                              });
+                                            }
+                                          }else{
+                                            setState((){
+                                              showDialog(context: context, builder: (context)=>HataOlustu(messaj: "Lütfen bilgleri eksiksiz giriniz.(Geçerli bir TC kimlik numarası giriniz.)",));
+                                            });
+                                          }
+                                        },),
                                         const Expanded(flex: 2, child: SizedBox())
                                       ],
                                     ),
                                   ))
                             ],
                           )),
-                      _altKisim()
-
+                      _altKisim(),
                     ],
                   ),
                 ),
@@ -190,7 +315,10 @@ class _GirisState extends State<Giris> {
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  child: ResimButton('resimler/ayarlar_32px.png')), //ayarlar_32px.png'),
+                  child: ResimButton('resimler/ayarlar_32px.png',onTap: (){
+                    Navigator.of(context).pushNamed("/ayarUrl");
+                  },),
+              ),
             ],
           ),
         )
@@ -237,5 +365,11 @@ class _GirisState extends State<Giris> {
     };
   }
 
-  _girdi(deger) {}
+  _girdi(String deger) {
+    if(deger.isNotEmpty&&deger.length==11){
+      _girenSakinTc = deger;
+    }else {
+      _girenSakinTc=null;
+    }
+  }
 }

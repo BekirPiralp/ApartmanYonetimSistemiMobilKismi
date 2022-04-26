@@ -3,7 +3,7 @@ import 'dart:developer';
 class WebServisConnection {
   static const String _scheme = "http://";
   static int _port = 80;
-  static String _host = "192.168.1.1";
+  static String _host = "127.0.0.1";
 
   static String get Url {
     return _port >= 1 && _port < 65535

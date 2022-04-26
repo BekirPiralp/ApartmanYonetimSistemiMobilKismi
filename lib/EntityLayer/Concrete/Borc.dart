@@ -35,15 +35,13 @@ class Borc extends Entity{
   /*** Sınıfa özel yazılacak***/
   @override
   Borc.cevirJsonMapdanNesne(Map <String,dynamic> json) : super.cevirJsonMapdanNesne(json){
-
     _Yil = int.parse(json["Yil"].toString());//işimizi sağlama alalım diye sitring sonra int
     _Ay = int.parse(json["Ay"].toString());
     _Apartman = int.parse(json["Apartman"].toString());
     _DaireSakini = int.parse(json["DaireSakini"].toString());
-    _OdemeMiktari = Decimal.fromJson(json["OdemeMiktari"].toString());
-    _BorcMiktari = Decimal.fromJson(json["BorcMiktari"].toString());
-    _Kalan = Decimal.fromJson(json["Kalan"].toString());
-
+    _OdemeMiktari = Decimal.parse(json["OdemeMiktari"]);
+    _BorcMiktari = Decimal.parse(json["BorcMiktari"]);
+    _Kalan = Decimal.parse(json["Kalan"]);
   }
 
   @override

@@ -38,7 +38,7 @@ class Aidat extends Entity{
     _Apartman = int.parse(json["Apartman"].toString());
     _Ay = int.parse(json["Ay"].toString());
     _Yil = int.parse(json["Yil"].toString());
-    _Tutar = Decimal.fromJson(json["Tutar"].toString());
+    _Tutar = Decimal.parse(json["Tutar"].toString());
     //return result;
   }
 
