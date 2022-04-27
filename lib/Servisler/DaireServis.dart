@@ -19,7 +19,7 @@ class DaireServisi {
           WebServisConnection.UrlDaireTanimlaNesne(queryparams),
           headers: WebServisConnection.baslik);
 
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -38,18 +38,17 @@ class DaireServisi {
   Future<bool> DaireTanimlaSno(int apartman, DaireSakini daireSakini, int daireSno) async {
     bool result = false;
     try {
-      Map<String, dynamic> queryparams = daireSakini.cevirNesnedenJsonMap();
-
-      queryparams.addAll({
+      Map<String, dynamic> queryparams = {
         "apartman": apartman,
         "daireSNO": daireSno
-      }); //body den alına bilir duruma göre değişe bilir
+      }; //body den alına bilir duruma göre değişe bilir
 
       http.Response response = await http.post(
           WebServisConnection.UrlDaireTanimlaSno(queryparams),
-          headers: WebServisConnection.baslik);
+          headers: WebServisConnection.baslik,
+          body: daireSakini.cevirNesnedenJsonMap().toString());//nesne yollama
 
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -75,11 +74,12 @@ class DaireServisi {
       http.Response response = await http.get(
           WebServisConnection.UrlDaireSakinleriGetir(queryparams),
           headers: WebServisConnection.baslik);
-      if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> json = List<Map<String,dynamic>>.from(jsonDecode(response.body));
-
-        if (json.isNotEmpty) {
-          result = List<DaireSakini>.from(json.map((e) => DaireSakini.cevirJsonMapdanNesne(e)).toList());
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
+        if (response.body.isNotEmpty) {
+          List<Map<String,dynamic>> json = List<Map<String,dynamic>>.from(jsonDecode(response.body));
+          if (json.isNotEmpty) {
+            result = json.map((e) => DaireSakini.cevirJsonMapdanNesne(e)).toList();
+          }
         }
       }else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +

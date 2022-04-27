@@ -28,10 +28,10 @@ class Apartman extends Entity {
   /*** Sınıfa özel yazılacak***/
   @override
   Apartman.cevirJsonMapdanNesne(Map<String, dynamic> json) : super.cevirJsonMapdanNesne(json) {
-    _Ad = json["Ad"];
-    _Ilce = json["Ilce"];
-    _Il = json["Il"];
-    _Ulke = json["Ulke"];
+    _Ad = json["Ad"].toString();
+    _Ilce = json["Ilce"].toString();
+    _Il = json["Il"].toString();
+    _Ulke = json["Ulke"].toString();
   }
 
   @override

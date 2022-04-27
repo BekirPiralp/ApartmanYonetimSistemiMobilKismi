@@ -221,7 +221,10 @@ class _Govde extends State<Govde> {
     setState(() {
       TahakkukServisi()
           .AidatGetir(_apartman)
-          .then((value) => _aidat = value)
+          .then((value) {setState(() {
+            _aidat = value;
+          });
+          })
           .catchError((hata) {
         setState(() {
           if (hata.runtimeType == SocketException)
@@ -240,7 +243,10 @@ class _Govde extends State<Govde> {
       });
       BorcServis()
           .BorcToplam(_apartman, _daireSakini?.SNoGet() ?? 0)
-          .then((value) => _borc = value)
+          .then((value) { setState(() {
+            _borc = value;
+          });
+          })
           .catchError((hata) {
         setState(() {
           if (hata.runtimeType == SocketException)
@@ -260,7 +266,9 @@ class _Govde extends State<Govde> {
 
       GiderlerServis()
           .GiderGetirDonem(_apartman, zaman.month, zaman.year)
-          .then((value) => _giderler = value)
+          .then((value) {setState(() {
+            _giderler = value;
+          });})
           .catchError((hata) {
         setState(() {
           if (hata.runtimeType == SocketException)
@@ -819,7 +827,7 @@ class _AltKisim extends State<AltKisim> {
                           if (value) {
                             showDialog(
                                 context: context,
-                                builder: (context) => Basarili());
+                                builder: (context){_borc=(_borc! - _tutar!); return Basarili();});
                           } else {
                             showDialog(
                                 context: context,

@@ -499,6 +499,7 @@ class _GovdeState extends State<Govde> {
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 30),
                             onChanged: (value) {
+                              _daireSakini.ApartmanSet(GirenPersonel.getYonetici()?.ApartmanGet()??0);//sıfır olursa ve hata atar ;)
                               if (value.isNotEmpty && value.length == 11)
                                 _daireSakini.TCSet(value);
                               else

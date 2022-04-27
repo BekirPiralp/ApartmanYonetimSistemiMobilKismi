@@ -14,7 +14,7 @@ class GirisServisi {
       http.Response response = await http.get(
           WebServisConnection.UrlGirisYonetici({"TC": Tc}),
           headers: WebServisConnection.baslik);
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         Map<String, dynamic> json = jsonDecode(response.body);
         result = Yonetici.cevirJsonMapdanNesne(json);
       } else if (response.statusCode == ResponseKod.serverError) {
@@ -39,7 +39,7 @@ class GirisServisi {
           WebServisConnection.UrlGirisDaireSakini({"TC": Tc}),
           headers: WebServisConnection.baslik);
       
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         Map<String, dynamic> json = jsonDecode(response.body);
         result = DaireSakini.cevirJsonMapdanNesne(json);
       } else if (response.statusCode == ResponseKod.serverError) {

@@ -23,9 +23,11 @@ class _UrlAyarlaState extends State<UrlAyarla> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(child: Text(WebServisConnection.Url),),
+            SizedBox(height: 30,),
             TextFormField(
               decoration: InputDecoration(
-                labelText: "Host"
+                labelText: "Host",
               ),
               keyboardType: TextInputType.url,
               onChanged: (value)=>_host=value,

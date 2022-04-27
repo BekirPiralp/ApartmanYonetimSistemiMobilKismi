@@ -39,9 +39,9 @@ class Borc extends Entity{
     _Ay = int.parse(json["Ay"].toString());
     _Apartman = int.parse(json["Apartman"].toString());
     _DaireSakini = int.parse(json["DaireSakini"].toString());
-    _OdemeMiktari = Decimal.parse(json["OdemeMiktari"]);
-    _BorcMiktari = Decimal.parse(json["BorcMiktari"]);
-    _Kalan = Decimal.parse(json["Kalan"]);
+    _OdemeMiktari = Decimal.parse(json["OdemeMiktari"].toString());
+    _BorcMiktari = Decimal.parse(json["BorcMiktari"].toString());
+    _Kalan = Decimal.parse(json["Kalan"].toString());
   }
 
   @override

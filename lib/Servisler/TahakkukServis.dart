@@ -16,12 +16,11 @@ class TahakkukServisi {
           //+"?apartman=${apartman}",
           headers: WebServisConnection.baslik);
       if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> decode= List<Map<String,dynamic>>.from(jsonDecode(response.body));
-        if(decode.isNotEmpty){
-          result = List<Aidat>.from(decode
-              .map((json) => Aidat.cevirJsonMapdanNesne(json))
-              .toList()) // cast<Aidat> yapmaz isek dinamik liste dönüyor ve buda hata oluşturuyor
-              .first; // aidat üründe bir veya birçok nesne gelecek
+        if (response.body.isNotEmpty && response.body.toUpperCase().compareTo("NULL")!=0) {
+          Map<String,dynamic> decode= jsonDecode(response.body);
+          if(decode.isNotEmpty){
+            result = Aidat.cevirJsonMapdanNesne(decode);
+          }
         }
 
       } else if (response.statusCode == ResponseKod.serverError) {
@@ -47,7 +46,7 @@ class TahakkukServisi {
               {"apartman": apartman, "tutar": tutar}),
           //+"?apartman=${apartman}&tutar=${tutar}",
           headers: WebServisConnection.baslik);
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -71,7 +70,7 @@ class TahakkukServisi {
           WebServisConnection.UrlTahakkukGerceklestir({"apartman": apartman}),
           //+ "?apartman=${apartman}",
           headers: WebServisConnection.baslik);
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +

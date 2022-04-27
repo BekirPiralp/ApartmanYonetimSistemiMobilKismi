@@ -16,7 +16,7 @@ class GiderlerServis {
               {"apartman": apartman, "tutar": tuttar, "tip": tip}),
           headers: WebServisConnection.baslik);
 
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -42,7 +42,7 @@ class GiderlerServis {
               {"apartman": apartman, "tutar": tutar, "aciklama": aciklama}),
           headers: WebServisConnection.baslik);
 
-      if (response.statusCode == ResponseKod.basarili) {
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -66,10 +66,12 @@ class GiderlerServis {
           WebServisConnection.UrlGiderGetir({"apartman": apartman}),
           headers: WebServisConnection.baslik);
 
-      if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> listJson = List<Map<String,dynamic>>.from(jsonDecode(response.body)); //dinamic liste
-        if (listJson.isNotEmpty) {
-          result = List<Gider>.from(listJson.map(_cevirici(json)).toList());
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
+        if (response.body.isNotEmpty) {
+          List<Map<String,dynamic>> listJson = List<Map<String,dynamic>>.from(jsonDecode(response.body)); //dinamic liste
+          if (listJson.isNotEmpty) {
+            result = listJson.map((json)=>Gider.cevirJsonMapdanNesne(json)).toList();
+          }
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -94,10 +96,12 @@ class GiderlerServis {
               {"apartman": apartman, "ay": ay, "yil": yil}),
           headers: WebServisConnection.baslik);
 
-      if (response.statusCode == ResponseKod.basarili) {
-        List<Map<String,dynamic>> listJson = List<Map<String,dynamic>>.from(jsonDecode(response.body)); //dinamic liste
-        if (listJson.isNotEmpty) {
-          result = List<Gider>.from(listJson.map(_cevirici(json)).toList());
+      if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
+        if (response.body.isNotEmpty) {
+          List<Map<String,dynamic>> listJson = List<Map<String,dynamic>>.from(jsonDecode(response.body)); //dinamic liste
+          if (listJson.isNotEmpty) {
+            result = listJson.map((json)=>Gider.cevirJsonMapdanNesne(json)).toList();
+          }
         }
       } else if (response.statusCode == ResponseKod.serverError) {
         throw Exception("Sunucu tarafı hata oluştu. Hata:\n" +
@@ -114,6 +118,6 @@ class GiderlerServis {
     return result;
   }
 
-  dynamic _cevirici(json) =>
-      Gider.cevirJsonMapdanNesne(json); // gider nesnesi oluştur
+
+       // gider nesnesi oluştur
 }

@@ -767,136 +767,202 @@ class AltKisim extends StatefulWidget {
 class _AltKisimState extends State<AltKisim> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      child: Row(
-        children: [
-          Expanded(
-            child: IconGenisButton(
-              "resimler/cancel.png",
-              color: Colors.grey.shade300,
-              text: Text(
-                "Çıkış",
-                style: TextStyle(fontSize: 20),
-              ),
-              onPress: () {
-                Cikis(context);
-              },
-            ),
-          ),
-          Expanded(
-            child: IconGenisButton(
-              "resimler/wallet.png",
-              text: const Text(
-                "Kaydet",
-                style: TextStyle(fontSize: 20),
-              ),
-              color: Colors.blue,
-              onPress: () {
-                setState(() {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Yukleniyor();
-                      });
-                });
-                if (_aidatKayit.TutarGet() > Decimal.zero ||
-                    _giderKayit.TutarGet() > Decimal.zero) {
-                  if (_aidatKayit.TutarGet() > Decimal.zero) {
-
-                    TahakkukServisi()
-                        .AidatTanimla(_apartman, _aidatKayit.TutarGet())
-                        .then((value) {
-                      setState(() {
-                        Navigator.of(context).pop();
-                        if (value == true) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => Basarili());
-                          _aidat = _aidatKayit;
-                          _aidatKayit = Aidat();
-                        } else
-                          showDialog(
-                              context: context,
-                              builder: (context) => Basarisiz());
-                      });
-                    }).catchError((hata) {
-                      setState(() {
-                        Navigator.of(context).pop();
-                        if (hata.runtimeType == SocketException) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => HataOlustu(
-                                    messaj:
-                                        "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
-                                  ));
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) => HataOlustu(
-                                    messaj:
-                                        "Aidat tanımlamada hataoluştu. Detay:\n${hata.toString()}",
-                                  ));
-                        }
-                      });
-                    });
-                  }
-
-                  if (_giderKayit.TutarGet() > Decimal.zero) {
-                    GiderlerServis()
-                        .Olustur(_apartman, _giderKayit.TutarGet(),
-                            _giderKayit.TipGet())
-                        .then((value) {
-                      setState(() {
-                        Navigator.of(context).pop();
-                        if (value) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => Basarili());
-                          _giderler ??= <Gider>[];
-                          _giderler?.add(_giderKayit);
-                        } else
-                          showDialog(
-                              context: context,
-                              builder: (context) => Basarisiz());
-                      });
-                    }).catchError((hata) {
-                      setState(() {
-                        Navigator.of(context).pop();
-                        if (hata.runtimeType == SocketException) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => HataOlustu(
-                                    messaj:
-                                        "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
-                                  ));
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (context) => HataOlustu(
-                                    messaj:
-                                        "Gider kaydetmede hataoluştu. Detay:\n${hata.toString()}",
-                                  ));
-                        }
-                      });
-                    });
-                  }
-                } else {
+    return Column(
+      children: [
+        Container( height:50,child: Row(
+          children: [
+            Expanded(
+              child: IconGenisButton(
+                "resimler/wallet.png",
+                text: const Text(
+                  "Borc uygula",
+                  style: TextStyle(fontSize: 20),
+                ),
+                color: Colors.blue,
+                onPress: () {
                   setState(() {
-                    Navigator.of(context).pop();
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return HataOlustu(
-                              messaj: "Lütfen parametreleri eksiksiz giriniz");
+                          return Yukleniyor();
                         });
                   });
-                }
-              },
+                  TahakkukServisi().Gerceklestir(_apartman)
+                      .then((value) {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          if (value == true) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => Basarili());
+                          } else
+                            showDialog(
+                                context: context,
+                                builder: (context) => Basarisiz());
+                        });
+                      }).catchError((hata) {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          if (hata.runtimeType == SocketException) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => HataOlustu(
+                                  messaj:
+                                  "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+                                ));
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) => HataOlustu(
+                                  messaj:
+                                  "Tahakkuk işleminde hata oluştu. Detay:\n${hata.toString()}",
+                                )
+                            );
+                          }
+                        });
+                      });
+
+
+                },
+              ),
             ),
+          ],
+        ),),
+        Container(
+          height: 50,
+          child: Row(
+            children: [
+              Expanded(
+                child: IconGenisButton(
+                  "resimler/cancel.png",
+                  color: Colors.grey.shade300,
+                  text: Text(
+                    "Çıkış",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPress: () {
+                    Cikis(context);
+                  },
+                ),
+              ),
+              Expanded(
+                child: IconGenisButton(
+                  "resimler/tamam.png",
+                  text: const Text(
+                    "Kaydet",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  color: Colors.blue,
+                  onPress: () {
+                    setState(() {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Yukleniyor();
+                          });
+                    });
+                    if (_aidatKayit.TutarGet() > Decimal.zero ||
+                        _giderKayit.TutarGet() > Decimal.zero) {
+                      if (_aidatKayit.TutarGet() > Decimal.zero) {
+
+                        TahakkukServisi()
+                            .AidatTanimla(_apartman, _aidatKayit.TutarGet())
+                            .then((value) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            if (value == true) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Basarili());
+                              setState(() {
+                                _aidat = _aidatKayit;
+                                _aidatKayit = Aidat();
+                              });
+                            } else
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Basarisiz());
+                          });
+                        }).catchError((hata) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            if (hata.runtimeType == SocketException) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => HataOlustu(
+                                        messaj:
+                                            "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+                                      ));
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => HataOlustu(
+                                        messaj:
+                                            "Aidat tanımlamada hataoluştu. Detay:\n${hata.toString()}",
+                                      ));
+                            }
+                          });
+                        });
+                      }
+
+                      if (_giderKayit.TutarGet() > Decimal.zero) {
+                        GiderlerServis()
+                            .Olustur(_apartman, _giderKayit.TutarGet(),
+                                _giderKayit.TipGet())
+                            .then((value) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            if (value) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Basarili());
+                              _giderler ??= <Gider>[];
+                              _giderler?.add(_giderKayit);
+                            } else
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Basarisiz());
+                          });
+                        }).catchError((hata) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            if (hata.runtimeType == SocketException) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => HataOlustu(
+                                        messaj:
+                                            "Lütfen internet bağlantınızı kontrol ediniz. Detay:\n${hata.toString()}",
+                                      ));
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => HataOlustu(
+                                        messaj:
+                                            "Gider kaydetmede hataoluştu. Detay:\n${hata.toString()}",
+                                      ));
+                            }
+                          });
+                        });
+                      }
+                    } else {
+                      setState(() {
+                        Navigator.of(context).pop();
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return HataOlustu(
+                                  messaj: "Lütfen parametreleri eksiksiz giriniz");
+                            });
+                      });
+                    }
+                  },
+                ),
+              ),
+
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

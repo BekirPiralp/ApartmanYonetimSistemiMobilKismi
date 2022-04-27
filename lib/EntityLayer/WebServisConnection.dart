@@ -5,7 +5,7 @@ class WebServisConnection {
   static String _host = "127.0.0.1";
 
   static String get Url {
-    return _port >= 1 && _port < 65535
+    return _port < 1 && _port >= 65535
         ? _scheme + _host + "/"
         : _scheme + _host + ":" + _port.toString() + "/";
   }
