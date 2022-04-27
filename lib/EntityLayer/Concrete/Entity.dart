@@ -35,4 +35,10 @@ class Entity implements IEntity{
     "SNo":_SNo,
     "SilDurum":_SilDurum};
   }
+
+  Map<String,String> cevirNesnedenJsonMapStringString() {
+    return {"_id":_id==null?"null":_id.toString(),
+      "SNo":_SNo.toString(),
+      "SilDurum":_SilDurum.toString()};
+  }
 }

@@ -56,5 +56,20 @@ class DaireSakini extends Entity{
     );
     return result;
   }
+
+  @override
+  Map<String, String> cevirNesnedenJsonMapStringString() {
+    var result = super.cevirNesnedenJsonMapStringString();
+    result.addAll(
+        {
+          "Apartman": _Apartman.toString(),
+          "Daire":_Daire.toString(),
+          "TC":_TC,
+          "Ad":_Ad,
+          "Soyad":_Soyad
+        }
+    );
+    return result;
+  }
   /*** Sınıfa özel yazılacak bitiş***/
 }
