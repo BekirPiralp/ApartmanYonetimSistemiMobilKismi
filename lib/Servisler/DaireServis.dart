@@ -46,7 +46,7 @@ class DaireServisi {
       http.Response response = await http.post(
           WebServisConnection.UrlDaireTanimlaSno(queryparams),
           headers: WebServisConnection.baslik,
-          body: daireSakini.cevirNesnedenJsonMap().toString());//nesne yollama
+          body: daireSakini.cevirNesnedenJsonMap());//nesne yollama
 
       if (response.statusCode == ResponseKod.basarili && response.body.toUpperCase().compareTo("NULL")!=0) {
         result = true;
